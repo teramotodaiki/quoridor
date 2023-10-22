@@ -1,4 +1,4 @@
-import { Application, Sprite, Assets } from "pixi.js";
+import { Application, Sprite, Assets, Graphics } from "pixi.js";
 
 export async function init(canvas: HTMLCanvasElement) {
   // The application will create a renderer using WebGL, if possible,
@@ -8,6 +8,7 @@ export async function init(canvas: HTMLCanvasElement) {
     width: 640,
     height: 640,
     view: canvas,
+    background: 0xffffff,
   });
 
   // load the texture we need
@@ -24,6 +25,22 @@ export async function init(canvas: HTMLCanvasElement) {
   // Rotate around the center
   bunny.anchor.x = 0.5;
   bunny.anchor.y = 0.5;
+
+  // 9x9マスの盤面を作る
+  for (let y = 0; y <= 9; y++) {
+    const line = new Graphics();
+    line.lineStyle(1, 0x000000, 1);
+    line.moveTo(0, y * 64);
+    line.lineTo(576, y * 64);
+    app.stage.addChild(line);
+  }
+  for (let x = 0; x <= 9; x++) {
+    const line = new Graphics();
+    line.lineStyle(1, 0x000000, 1);
+    line.moveTo(x * 64, 0);
+    line.lineTo(x * 64, 576);
+    app.stage.addChild(line);
+  }
 
   // Add the bunny to the scene we are building
   app.stage.addChild(bunny);
