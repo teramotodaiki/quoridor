@@ -1,4 +1,5 @@
 import { Application, Assets, Container, Graphics, Sprite } from "pixi.js";
+import { Wall } from "./wall";
 
 export async function init(canvas: HTMLCanvasElement) {
   // The application will create a renderer using WebGL, if possible,
@@ -46,11 +47,11 @@ export async function init(canvas: HTMLCanvasElement) {
   board.addChild(pieceBlack);
 
   // 壁
-  const wall = new Graphics();
-  wall.beginFill();
-  const width = 6;
-  wall.drawRect(64 - width / 2, 0, width, 64 * 2);
-  board.addChild(wall);
+  const wall1 = new Wall(2, 2, "vertical");
+  board.addChild(wall1);
+
+  const wall2 = new Wall(5, 1, "horizontal");
+  board.addChild(wall2);
 
   app.ticker.add((delta) => {});
 }
