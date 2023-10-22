@@ -3,19 +3,19 @@ import "./App.css";
 import { init } from "./quoridor/init"; // Dynamic importしてもいい
 
 function App() {
-  const initRef = useRef(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
-    if (initRef.current) {
-      console.log("Already initialized.");
+    if (!canvasRef.current) {
       return;
     }
-    initRef.current = true;
-    init().catch(console.error);
+    init(canvasRef.current);
   }, []);
 
   return (
     <>
       <h1>Quoridor</h1>
+      <canvas id="game" ref={canvasRef}></canvas>
     </>
   );
 }

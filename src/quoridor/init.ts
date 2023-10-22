@@ -1,15 +1,14 @@
 import { Application, Sprite, Assets } from "pixi.js";
 
-export async function init() {
+export async function init(canvas: HTMLCanvasElement) {
   // The application will create a renderer using WebGL, if possible,
   // with a fallback to a canvas render. It will also setup the ticker
   // and the root stage PIXI.Container
-  const app = new Application();
-
-  // The application will create a canvas element for you that you
-  // can then insert into the DOM
-  const root = document.querySelector("#root");
-  root?.appendChild(app.view);
+  const app = new Application({
+    width: 640,
+    height: 640,
+    view: canvas,
+  });
 
   // load the texture we need
   const texture = await Assets.load("assets/sample.png");
