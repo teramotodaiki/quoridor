@@ -1,4 +1,4 @@
-import { Application, Sprite, Assets, Graphics } from "pixi.js";
+import { Application, Assets, Container, Graphics, Sprite } from "pixi.js";
 
 export async function init(canvas: HTMLCanvasElement) {
   // The application will create a renderer using WebGL, if possible,
@@ -27,20 +27,24 @@ export async function init(canvas: HTMLCanvasElement) {
   bunny.anchor.y = 0.5;
 
   // 9x9マスの盤面を作る
+  const board = new Container();
+  board.x = 32;
+  board.y = 32;
   for (let y = 0; y <= 9; y++) {
     const line = new Graphics();
     line.lineStyle(1, 0x000000, 1);
     line.moveTo(0, y * 64);
     line.lineTo(576, y * 64);
-    app.stage.addChild(line);
+    board.addChild(line);
   }
   for (let x = 0; x <= 9; x++) {
     const line = new Graphics();
     line.lineStyle(1, 0x000000, 1);
     line.moveTo(x * 64, 0);
     line.lineTo(x * 64, 576);
-    app.stage.addChild(line);
+    board.addChild(line);
   }
+  app.stage.addChild(board);
 
   // Add the bunny to the scene we are building
   app.stage.addChild(bunny);
