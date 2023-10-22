@@ -45,5 +45,12 @@ export async function init(canvas: HTMLCanvasElement) {
   pieceBlack.y = 8 * 64;
   board.addChild(pieceBlack);
 
+  // 壁
+  const wall = new Graphics();
+  wall.beginFill();
+  const width = 6;
+  wall.drawRect(64 - width / 2, 0, width, 64 * 2);
+  board.addChild(wall);
+
   app.ticker.add((delta) => {});
 }
