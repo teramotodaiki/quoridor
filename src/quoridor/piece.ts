@@ -1,5 +1,6 @@
 import { Container, Sprite, Texture } from "pixi.js";
 import { SelectableTile } from "./selectable-tile";
+import { Wall } from "./wall";
 
 export class Piece extends Sprite {
   constructor(texture: Texture, x: number, y: number) {
@@ -34,11 +35,38 @@ export class Piece extends Sprite {
       [-1, 0],
       [1, 0],
     ];
-    for (const dir of dirs) {
-      const X = this.X + dir[0];
-      const Y = this.Y + dir[1];
+    loop: for (const [dx, dy] of dirs) {
+      const X = this.X + dx;
+      const Y = this.Y + dy;
       if (X < 0 || X >= 9 || Y < 0 || Y >= 9) {
         continue; // 盤外
+      }
+
+      //壁にぶつからないか
+      const walls = Wall.collections;
+      // 横方向の移動でぶつかるのはverticalの壁だけ
+      if (dx) {
+        for (const wall of walls) {
+          if (
+            wall.direction === "vertical" &&
+            wall.X === this.X + (dx > 0 ? 1 : 0) && // X座標が同じなら壁は駒の左にある
+            (wall.Y === Y || wall.Y === Y + 1)
+          ) {
+            continue loop;
+          }
+        }
+      }
+      // 縦方向の移動でぶつかるのはhorizontalの壁だけ
+      if (dy) {
+        for (const wall of walls) {
+          if (
+            wall.direction === "horizontal" &&
+            wall.Y === this.Y + (dy > 0 ? 1 : 0) && // Y座標が同じなら壁は駒の上にある
+            (wall.X === X || wall.X === X + 1)
+          ) {
+            continue loop;
+          }
+        }
       }
 
       const tile = new SelectableTile(X, Y);

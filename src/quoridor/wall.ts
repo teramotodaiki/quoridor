@@ -5,6 +5,8 @@ export class Wall extends Graphics {
   static Width = 8;
   static Height = 64 * 2 - 8; // 少し短くすることで視認性を上げる
 
+  direction: "horizontal" | "vertical";
+
   constructor(X: number, Y: number, direction: "horizontal" | "vertical") {
     super();
     Wall.collections.push(this);
@@ -13,6 +15,7 @@ export class Wall extends Graphics {
     this.pivot.y = Wall.Height / 2;
     this.X = X;
     this.Y = Y;
+    this.direction = direction;
 
     // 光沢
     this.beginFill("#2e0f01");
