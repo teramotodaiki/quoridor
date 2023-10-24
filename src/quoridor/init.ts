@@ -36,13 +36,13 @@ export async function init(canvas: HTMLCanvasElement) {
   }
 
   const pieceWhite = new Sprite(textureWhite);
-  pieceWhite.x = 4 * 64;
-  pieceWhite.y = 0 * 64;
+  pieceWhite.x = 4 * 64 - 8;
+  pieceWhite.y = 0 * 64 - 22;
   board.addChild(pieceWhite);
 
   const pieceBlack = new Sprite(textureBlack);
-  pieceBlack.x = 4 * 64;
-  pieceBlack.y = 8 * 64;
+  pieceBlack.x = 4 * 64 - 8;
+  pieceBlack.y = 8 * 64 - 22;
   board.addChild(pieceBlack);
 
   // 壁
