@@ -27,7 +27,7 @@ export class Piece extends Sprite {
   /**
    * 移動できる候補を表示する
    */
-  showSelectableTiles(container: Container) {
+  showSelectableTiles(container: Container, callback: () => void) {
     const dirs = [
       [0, -1],
       [0, 1],
@@ -46,8 +46,7 @@ export class Piece extends Sprite {
         this.X = X;
         this.Y = Y;
         container.removeChildren();
-        // 動作確認のため、続けて入力を受け付ける
-        this.showSelectableTiles(container);
+        callback();
       });
       container.addChild(tile);
     }

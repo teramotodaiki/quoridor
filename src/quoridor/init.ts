@@ -40,10 +40,9 @@ export async function init(canvas: HTMLCanvasElement) {
     board.addChild(line);
   }
 
+  // プレイヤーの駒
   const pieceWhite = new Piece(textureWhite, 4, 0);
   board.addChild(pieceWhite);
-  pieceWhite.showSelectableTiles(selectableTileContainer);
-
   const pieceBlack = new Piece(textureBlack, 4, 8);
   board.addChild(pieceBlack);
 
@@ -65,5 +64,18 @@ export async function init(canvas: HTMLCanvasElement) {
 
   app.stage.addChild(board);
 
-  app.ticker.add((delta) => {});
+  const players = [pieceWhite, pieceBlack];
+  let currentPlayer = 0;
+  let beginTurn = true;
+
+  app.ticker.add((delta) => {
+    if (beginTurn) {
+      const piece = players[currentPlayer];
+      piece.showSelectableTiles(selectableTileContainer, () => {
+        currentPlayer = (currentPlayer + 1) % players.length;
+        beginTurn = true;
+      });
+      beginTurn = false;
+    }
+  });
 }
