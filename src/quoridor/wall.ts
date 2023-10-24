@@ -1,16 +1,18 @@
 import { Graphics } from "pixi.js";
 
 export class Wall extends Graphics {
+  static collections: Wall[] = [];
   static Width = 8;
   static Height = 64 * 2 - 8; // 少し短くすることで視認性を上げる
 
-  constructor(x: number, y: number, direction: "horizontal" | "vertical") {
+  constructor(X: number, Y: number, direction: "horizontal" | "vertical") {
     super();
+    Wall.collections.push(this);
     // 回転の中心を中央にする
     this.pivot.x = Wall.Width / 2;
     this.pivot.y = Wall.Height / 2;
-    this.x = x * 64;
-    this.y = y * 64;
+    this.X = X;
+    this.Y = Y;
 
     // 光沢
     this.beginFill("#2e0f01");
@@ -21,5 +23,18 @@ export class Wall extends Graphics {
       this.scale.y = -1; // 左上から光が当たっている感じを出す
     }
     this.endFill();
+  }
+
+  get X() {
+    return Math.floor(this.x / 64);
+  }
+  set X(x: number) {
+    this.x = x * 64;
+  }
+  get Y() {
+    return Math.floor(this.y / 64);
+  }
+  set Y(y: number) {
+    this.y = y * 64;
   }
 }
