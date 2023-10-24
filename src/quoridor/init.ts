@@ -27,14 +27,14 @@ export async function init(canvas: HTMLCanvasElement) {
   board.y = 32;
   for (let y = 1; y < 9; y++) {
     const line = new Graphics();
-    line.lineStyle(2, "#78542e", 1);
+    line.lineStyle(1, "#2e0f01", 1);
     line.moveTo(0, y * 64);
     line.lineTo(576, y * 64);
     board.addChild(line);
   }
   for (let x = 1; x < 9; x++) {
     const line = new Graphics();
-    line.lineStyle(2, "#78542e", 1);
+    line.lineStyle(1, "#2e0f01", 1);
     line.moveTo(x * 64, 0);
     line.lineTo(x * 64, 576);
     board.addChild(line);
