@@ -17,8 +17,12 @@ export async function init(canvas: HTMLCanvasElement) {
   const textureWhite = await Assets.load("assets/piece_white.png");
   const textureBlack = await Assets.load("assets/piece_black.png");
 
-  // 9x9マスの盤面を作る
   const board = new Container();
+
+  const selectableTileContainer = new Container();
+  board.addChild(selectableTileContainer);
+
+  // 9x9マスの盤面を作る
   board.x = 32;
   board.y = 32;
   for (let y = 1; y < 9; y++) {
@@ -38,6 +42,7 @@ export async function init(canvas: HTMLCanvasElement) {
 
   const pieceWhite = new Piece(textureWhite, 4, 0);
   board.addChild(pieceWhite);
+  pieceWhite.showSelectableTiles(selectableTileContainer);
 
   const pieceBlack = new Piece(textureBlack, 4, 8);
   board.addChild(pieceBlack);
