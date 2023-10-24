@@ -1,5 +1,6 @@
 import { Application, Assets, Container, Graphics, Sprite } from "pixi.js";
 import { Wall } from "./wall";
+import { Piece } from "./piece";
 
 export async function init(canvas: HTMLCanvasElement) {
   // The application will create a renderer using WebGL, if possible,
@@ -35,14 +36,10 @@ export async function init(canvas: HTMLCanvasElement) {
     board.addChild(line);
   }
 
-  const pieceWhite = new Sprite(textureWhite);
-  pieceWhite.x = 4 * 64 - 8;
-  pieceWhite.y = 0 * 64 - 22;
+  const pieceWhite = new Piece(textureWhite, 4, 0);
   board.addChild(pieceWhite);
 
-  const pieceBlack = new Sprite(textureBlack);
-  pieceBlack.x = 4 * 64 - 8;
-  pieceBlack.y = 8 * 64 - 22;
+  const pieceBlack = new Piece(textureBlack, 4, 8);
   board.addChild(pieceBlack);
 
   // 壁
