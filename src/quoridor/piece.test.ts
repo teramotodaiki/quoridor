@@ -26,4 +26,35 @@ describe("getSelectables", () => {
       [4, 1],
     ]);
   });
+
+  test("a horizontal wall is below of white", () => {
+    const stage = stageFromValues({
+      players: [
+        [4, 0],
+        [4, 8],
+      ],
+      walls: [[4, 1, "horizontal"]],
+    });
+    const white = stage.players[0];
+    const black = stage.players[1];
+
+    expect(tuple(getSelectables(white, stage))).toStrictEqual([
+      [3, 0],
+      [5, 0],
+    ]);
+
+    // ひとつ右のマスにおいても結果は同じ
+    stage.walls[0].X = 5;
+    expect(tuple(getSelectables(white, stage))).toStrictEqual([
+      [3, 0],
+      [5, 0],
+    ]);
+
+    // もう一方のプレイヤーは自由に動ける
+    expect(tuple(getSelectables(black, stage))).toStrictEqual([
+      [4, 7],
+      [3, 8],
+      [5, 8],
+    ]);
+  });
 });
