@@ -4,7 +4,7 @@ import { getSelectables, stageFromValues } from "./stage";
 
 // テストしやすいフォーマットに加工する
 function tuple(positions: { X: number; Y: number }[]) {
-  const sorted = [...positions].sort((a, b) => a.Y - b.Y + 0.01 * (a.X - b.Y));
+  const sorted = [...positions].sort((a, b) => a.Y - b.Y + 0.01 * (a.X - b.X));
   const tuples = sorted.map((v) => [v.X, v.Y]);
   return tuples;
 }
