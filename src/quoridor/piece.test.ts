@@ -2,6 +2,13 @@ import { describe, expect, test } from "vitest";
 
 import { getSelectables, stageFromValues } from "./stage";
 
+// テストしやすいフォーマットに加工する
+function tuple(positions: { X: number; Y: number }[]) {
+  const sorted = [...positions].sort((a, b) => a.Y - b.Y + 0.01 * (a.X - b.Y));
+  const tuples = sorted.map((v) => [v.X, v.Y]);
+  return tuples;
+}
+
 describe("getSelectables", () => {
   test("initialized", () => {
     const stage = stageFromValues({
@@ -13,10 +20,10 @@ describe("getSelectables", () => {
     });
     const player = stage.players[0];
     const selectables = getSelectables(player, stage);
-    expect(selectables).toStrictEqual([
-      { X: 4, Y: 1 },
-      { X: 3, Y: 0 },
-      { X: 5, Y: 0 },
+    expect(tuple(selectables)).toStrictEqual([
+      [3, 0],
+      [5, 0],
+      [4, 1],
     ]);
   });
 });
