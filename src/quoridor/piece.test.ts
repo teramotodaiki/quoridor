@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { getSelectables, stageFromValues } from "./stage";
+import { IStage, getSelectables } from "./stage";
 
 // テストしやすいフォーマットに加工する
 function tuple(positions: { X: number; Y: number }[]) {
@@ -9,49 +9,57 @@ function tuple(positions: { X: number; Y: number }[]) {
   return tuples;
 }
 
+// テスト用の使いやすい関数
+function mockStage() {
+  const stage: IStage = {
+    players: [
+      { X: 4, Y: 0 },
+      { X: 4, Y: 8 },
+    ],
+    walls: [],
+  };
+
+  return {
+    ...stage,
+    get(player: number) {
+      const target = stage.players[player];
+      const selectables = getSelectables(target, stage);
+      return tuple(selectables);
+    },
+    addWall(X: number, Y: number, direction: "horizontal" | "vertical") {
+      stage.walls.push({ X, Y, direction });
+    },
+  };
+}
+
 describe("getSelectables", () => {
   test("initialized", () => {
-    const stage = stageFromValues({
-      players: [
-        [4, 0],
-        [4, 8],
-      ],
-      walls: [],
-    });
-    const player = stage.players[0];
-    const selectables = getSelectables(player, stage);
-    expect(tuple(selectables)).toStrictEqual([
+    const stage = mockStage();
+    expect(stage.get(0)).toStrictEqual([
       [3, 0],
       [5, 0],
       [4, 1],
     ]);
   });
 
-  test("a horizontal wall is below of white", () => {
-    const stage = stageFromValues({
-      players: [
-        [4, 0],
-        [4, 8],
-      ],
-      walls: [[4, 1, "horizontal"]],
-    });
-    const white = stage.players[0];
-    const black = stage.players[1];
+  test("a horizontal wall is by the white", () => {
+    const stage = mockStage();
+    stage.addWall(4, 1, "horizontal");
 
-    expect(tuple(getSelectables(white, stage))).toStrictEqual([
+    expect(stage.get(0)).toStrictEqual([
       [3, 0],
       [5, 0],
     ]);
 
     // ひとつ右のマスにおいても結果は同じ
     stage.walls[0].X = 5;
-    expect(tuple(getSelectables(white, stage))).toStrictEqual([
+    expect(stage.get(0)).toStrictEqual([
       [3, 0],
       [5, 0],
     ]);
 
     // もう一方のプレイヤーは自由に動ける
-    expect(tuple(getSelectables(black, stage))).toStrictEqual([
+    expect(stage.get(1)).toStrictEqual([
       [4, 7],
       [3, 8],
       [5, 8],

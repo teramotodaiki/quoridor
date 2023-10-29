@@ -10,14 +10,9 @@ interface IWall extends IPoint {
   direction: "horizontal" | "vertical";
 }
 
-interface IStage {
+export interface IStage {
   players: IPoint[];
   walls: IWall[];
-}
-
-interface StageTuple {
-  players: [number, number][];
-  walls: [number, number, "horizontal" | "vertical"][];
 }
 
 export function stageFromCollections() {
@@ -26,13 +21,6 @@ export function stageFromCollections() {
     walls: Wall.collections,
   };
   return stage;
-}
-
-export function stageFromValues(stage: StageTuple) {
-  return {
-    players: stage.players.map(([X, Y]) => ({ X, Y })),
-    walls: stage.walls.map(([X, Y, direction]) => ({ X, Y, direction })),
-  };
 }
 
 export function getSelectables(self: IPoint, stage: IStage) {
