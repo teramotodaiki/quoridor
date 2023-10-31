@@ -92,4 +92,38 @@ describe("getSelectables", () => {
       [4, 1],
     ]);
   });
+
+  test("a vertical wall is by the white", () => {
+    const stage = mockStage();
+    // 白の左に壁を置く
+    stage.addWall(4, 1, "vertical");
+    // 下と右にだけ移動できる
+    expect(stage.get(0)).toStrictEqual([
+      [5, 0],
+      [4, 1],
+    ]);
+    // ひとつ右のマスにおいた場合、下と左に移動できる
+    stage.walls[0].X = 5;
+    expect(stage.get(0)).toStrictEqual([
+      [3, 0],
+      [4, 1],
+    ]);
+  });
+
+  test("a vertical wall is by the black", () => {
+    const stage = mockStage();
+    // 黒の左に壁を置く
+    stage.addWall(4, 8, "vertical");
+    // 上と右にだけ移動できる
+    expect(stage.get(1)).toStrictEqual([
+      [4, 7],
+      [5, 8],
+    ]);
+    // ひとつ右のマスにおいた場合、上と左に移動できる
+    stage.walls[0].X = 5;
+    expect(stage.get(1)).toStrictEqual([
+      [4, 7],
+      [3, 8],
+    ]);
+  });
 });
