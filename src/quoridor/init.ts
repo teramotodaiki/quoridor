@@ -1,6 +1,7 @@
 import { Application, Assets, Container, Graphics, Sprite } from "pixi.js";
 import { Wall } from "./wall";
 import { Piece } from "./piece";
+import { UIWall } from "./ui-wall";
 
 export async function init(canvas: HTMLCanvasElement) {
   // The application will create a renderer using WebGL, if possible,
@@ -19,20 +20,35 @@ export async function init(canvas: HTMLCanvasElement) {
 
   const board = new Container();
 
-  // 盤をクリックして壁を配置する
-  const wallArea = new Sprite();
-  wallArea.width = 576;
-  wallArea.height = 576;
-  wallArea.eventMode = "static";
-  board.addChild(wallArea);
-  wallArea.on("click", (event) => {
-    const boardPosition = board.toLocal(event.global);
-    const mouseX = Math.floor(boardPosition.x / 64);
-    const mouseY = Math.floor(boardPosition.y / 64);
-    const wall = new Wall(mouseX, mouseY, "horizontal"); // 適当
-    board.addChild(wall);
-    nextPlayer();
-  });
+  // 選択可能な壁を表示する
+  const selectableWallContainer = new Container();
+  for (let x = 1; x < 9; x++) {
+    for (let y = 1; y < 9; y++) {
+      for (const direction of ["horizontal", "vertical"] as const) {
+        const uiWall = new UIWall(x, y, direction);
+        uiWall.eventMode = "static";
+        uiWall.alpha = 0;
+        uiWall.on("pointerenter", () => {
+          // uiWall.alpha = 1;
+        });
+        uiWall.on("pointerleave", () => {
+          // uiWall.alpha = 0;
+        });
+        uiWall.on("click", () => {
+          // ２回押すと壁を置く
+          if (uiWall.alpha === 0) {
+            uiWall.alpha = 1;
+          } else {
+            const wall = new Wall(x, y, direction);
+            board.addChild(wall);
+            nextPlayer();
+          }
+        });
+        selectableWallContainer.addChild(uiWall);
+      }
+    }
+  }
+  board.addChild(selectableWallContainer);
 
   const selectableTileContainer = new Container();
   board.addChild(selectableTileContainer);
@@ -60,13 +76,6 @@ export async function init(canvas: HTMLCanvasElement) {
   board.addChild(pieceWhite);
   const pieceBlack = new Piece(textureBlack, 4, 8);
   board.addChild(pieceBlack);
-
-  // 壁
-  const wall1 = new Wall(2, 2, "vertical");
-  board.addChild(wall1);
-
-  const wall2 = new Wall(5, 1, "horizontal");
-  board.addChild(wall2);
 
   const background = new Sprite(await Assets.load("assets/background.png"));
   background.pivot.x = 512;
