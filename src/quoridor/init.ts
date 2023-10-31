@@ -19,6 +19,21 @@ export async function init(canvas: HTMLCanvasElement) {
 
   const board = new Container();
 
+  // 盤をクリックして壁を配置する
+  const wallArea = new Sprite();
+  wallArea.width = 576;
+  wallArea.height = 576;
+  wallArea.eventMode = "static";
+  board.addChild(wallArea);
+  wallArea.on("click", (event) => {
+    const boardPosition = board.toLocal(event.global);
+    const mouseX = Math.floor(boardPosition.x / 64);
+    const mouseY = Math.floor(boardPosition.y / 64);
+    const wall = new Wall(mouseX, mouseY, "horizontal"); // 適当
+    board.addChild(wall);
+    nextPlayer();
+  });
+
   const selectableTileContainer = new Container();
   board.addChild(selectableTileContainer);
 
@@ -68,13 +83,16 @@ export async function init(canvas: HTMLCanvasElement) {
   let currentPlayer = 0;
   let beginTurn = true;
 
+  function nextPlayer() {
+    selectableTileContainer.removeChildren();
+    currentPlayer = (currentPlayer + 1) % players.length;
+    beginTurn = true;
+  }
+
   app.ticker.add((delta) => {
     if (beginTurn) {
       const piece = players[currentPlayer];
-      piece.showSelectableTiles(selectableTileContainer, () => {
-        currentPlayer = (currentPlayer + 1) % players.length;
-        beginTurn = true;
-      });
+      piece.showSelectableTiles(selectableTileContainer, nextPlayer);
       beginTurn = false;
     }
   });
