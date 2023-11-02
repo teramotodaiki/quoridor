@@ -22,22 +22,30 @@ export async function init(canvas: HTMLCanvasElement) {
 
   // 選択可能な壁を表示する
   const selectableWallContainer = new Container();
+  let _showingUIWall: UIWall | null = null;
+  const showUIWall = (uiWall: UIWall) => {
+    if (_showingUIWall) {
+      _showingUIWall.alpha = 0;
+    }
+    uiWall.alpha = 1;
+    _showingUIWall = uiWall;
+  };
   for (let x = 1; x < 9; x++) {
     for (let y = 1; y < 9; y++) {
       for (const direction of ["horizontal", "vertical"] as const) {
         const uiWall = new UIWall(x, y, direction);
         uiWall.eventMode = "static";
         uiWall.alpha = 0;
-        uiWall.on("pointerenter", () => {
-          // uiWall.alpha = 1;
+        uiWall.on("mouseenter", () => {
+          showUIWall(uiWall);
         });
-        uiWall.on("pointerleave", () => {
-          // uiWall.alpha = 0;
+        uiWall.on("mouseleave", () => {
+          uiWall.alpha = 0;
         });
-        uiWall.on("click", () => {
-          // ２回押すと壁を置く
+        uiWall.on("pointertap", () => {
+          // mouseenter or 一度タップしてから、もう一度押すと壁を置く
           if (uiWall.alpha === 0) {
-            uiWall.alpha = 1;
+            showUIWall(uiWall);
           } else {
             const wall = new Wall(x, y, direction);
             board.addChild(wall);
@@ -93,12 +101,15 @@ export async function init(canvas: HTMLCanvasElement) {
   let beginTurn = true;
 
   function nextPlayer() {
+    if (_showingUIWall) {
+      _showingUIWall.alpha = 0;
+    }
     selectableTileContainer.removeChildren();
     currentPlayer = (currentPlayer + 1) % players.length;
     beginTurn = true;
   }
 
-  app.ticker.add((delta) => {
+  app.ticker.add(() => {
     if (beginTurn) {
       const piece = players[currentPlayer];
       piece.showSelectableTiles(selectableTileContainer, nextPlayer);
