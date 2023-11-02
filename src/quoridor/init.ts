@@ -1,7 +1,8 @@
 import { Application, Assets, Container, Graphics, Sprite } from "pixi.js";
-import { Wall } from "./wall";
 import { Piece } from "./piece";
 import { UIWall } from "./ui-wall";
+import { Wall } from "./wall";
+import { WinEffect } from "./win-effect";
 
 export async function init(canvas: HTMLCanvasElement) {
   // The application will create a renderer using WebGL, if possible,
@@ -111,6 +112,15 @@ export async function init(canvas: HTMLCanvasElement) {
       _showingUIWall.alpha = 0;
     }
     selectableTileContainer.removeChildren();
+    // 勝敗判定
+    const winner =
+      pieceBlack.Y === 0 ? "black" : pieceWhite.Y === 8 ? "white" : null;
+    if (winner) {
+      const winEffect = new WinEffect(winner);
+      app.stage.addChild(winEffect);
+      return;
+    }
+    // 次のターンへ
     currentPlayer = (currentPlayer + 1) % players.length;
     beginTurn = true;
   }
