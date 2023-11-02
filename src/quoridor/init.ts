@@ -14,6 +14,12 @@ export async function init(canvas: HTMLCanvasElement) {
     background: 0xffffff,
   });
 
+  // PIXI.jsは自動的にcanvasに[touch-action="none"]属性を付与する
+  // それだとピンチイン出来なくて不便なので、"auto"に戻す
+  if (app.view.style) {
+    app.view.style.touchAction = "auto";
+  }
+
   // load the texture we need
   const textureWhite = await Assets.load("assets/piece_white.png");
   const textureBlack = await Assets.load("assets/piece_black.png");
