@@ -31,7 +31,7 @@ export function getSelectables(self: IPoint, stage: IStage) {
     [-1, 0],
     [1, 0],
   ];
-  loop: for (const [dx, dy] of dirs) {
+  for (const [dx, dy] of dirs) {
     const X = self.X + dx;
     const Y = self.Y + dy;
     if (X < 0 || X >= 9 || Y < 0 || Y >= 9) {
@@ -40,32 +40,44 @@ export function getSelectables(self: IPoint, stage: IStage) {
 
     //壁にぶつからないか
     const walls = stage.walls;
-    // 横方向の移動でぶつかるのはverticalの壁だけ
-    if (dx) {
-      for (const wall of walls) {
-        if (
-          wall.direction === "vertical" &&
-          wall.X === self.X + (dx > 0 ? 1 : 0) && // X座標が同じなら壁は駒の左にある
-          (wall.Y === Y || wall.Y === Y + 1)
-        ) {
-          continue loop;
-        }
-      }
-    }
-    // 縦方向の移動でぶつかるのはhorizontalの壁だけ
-    if (dy) {
-      for (const wall of walls) {
-        if (
-          wall.direction === "horizontal" &&
-          wall.Y === self.Y + (dy > 0 ? 1 : 0) && // Y座標が同じなら壁は駒の上にある
-          (wall.X === X || wall.X === X + 1)
-        ) {
-          continue loop;
-        }
-      }
+    const isCollided = collided(walls, self, dx, dy);
+    if (isCollided) {
+      continue;
     }
 
     selectables.push({ X, Y });
   }
   return selectables;
+}
+
+function collided(walls: IWall[], pos: IPoint, dx: number, dy: number) {
+  const X = pos.X + dx;
+  const Y = pos.Y + dy;
+
+  // 横方向の移動でぶつかるのはverticalの壁だけ
+  if (dx) {
+    for (const wall of walls) {
+      if (
+        wall.direction === "vertical" &&
+        wall.X === pos.X + (dx > 0 ? 1 : 0) && // X座標が同じなら壁は駒の左にある
+        (wall.Y === Y || wall.Y === Y + 1)
+      ) {
+        return true;
+      }
+    }
+  }
+  // 縦方向の移動でぶつかるのはhorizontalの壁だけ
+  if (dy) {
+    for (const wall of walls) {
+      if (
+        wall.direction === "horizontal" &&
+        wall.Y === pos.Y + (dy > 0 ? 1 : 0) && // Y座標が同じなら壁は駒の上にある
+        (wall.X === X || wall.X === X + 1)
+      ) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
