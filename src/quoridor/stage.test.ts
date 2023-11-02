@@ -126,4 +126,18 @@ describe("getSelectables", () => {
       [3, 8],
     ]);
   });
+
+  // 相手の駒を飛び越える
+  test("jump over the other piece", () => {
+    const stage = mockStage();
+    stage.players[0] = { X: 4, Y: 4 };
+    stage.players[1] = { X: 4, Y: 5 };
+
+    expect(stage.get(0)).toStrictEqual([
+      [4, 3],
+      [3, 4],
+      [5, 4],
+      [4, 6],
+    ]);
+  });
 });

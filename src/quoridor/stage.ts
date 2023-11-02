@@ -31,6 +31,14 @@ export function getSelectables(self: IPoint, stage: IStage) {
     [-1, 0],
     [1, 0],
   ];
+  const enemy = stage.players[1 - stage.players.indexOf(self)];
+  // 相手の駒があれば飛び越える
+  for (const [i, [dx, dy]] of [...dirs].entries()) {
+    if (enemy.X === self.X + dx && enemy.Y === self.Y + dy) {
+      dirs.splice(i, 1);
+      dirs.push([dx * 2, dy * 2]);
+    }
+  }
   for (const [dx, dy] of dirs) {
     const X = self.X + dx;
     const Y = self.Y + dy;
