@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { IStage, collided, getSelectables } from "./stage";
+import { IStage, collided, getSelectables } from "./game-manager";
 
 // テストしやすいフォーマットに加工する
 function tuple(positions: { X: number; Y: number }[]) {
