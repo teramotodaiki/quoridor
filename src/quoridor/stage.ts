@@ -58,7 +58,7 @@ export function getSelectables(self: IPoint, stage: IStage) {
   return selectables;
 }
 
-function collided(walls: IWall[], pos: IPoint, dx: number, dy: number) {
+export function collided(walls: IWall[], pos: IPoint, dx: number, dy: number) {
   const X = pos.X + dx;
   const Y = pos.Y + dy;
 

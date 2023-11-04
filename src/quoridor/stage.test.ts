@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { IStage, getSelectables } from "./stage";
+import { IStage, collided, getSelectables } from "./stage";
 
 // テストしやすいフォーマットに加工する
 function tuple(positions: { X: number; Y: number }[]) {
@@ -139,5 +139,14 @@ describe("getSelectables", () => {
       [5, 4],
       [4, 6],
     ]);
+  });
+});
+
+describe("collide", () => {
+  test("collide horizontal", () => {
+    const pos = { X: 4, Y: 3 };
+    const wall = { X: 3, Y: 3, direction: "horizontal" } as const;
+    const actual = collided([wall], pos, 0, 1);
+    expect(actual).toBe(true);
   });
 });
