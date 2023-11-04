@@ -31,14 +31,9 @@ export function getSelectables(self: IPoint, stage: IStage) {
     [-1, 0],
     [1, 0],
   ];
-  const enemy = stage.players[1 - stage.players.indexOf(self)];
-  // 相手の駒があれば飛び越える
-  for (const [i, [dx, dy]] of [...dirs].entries()) {
-    if (enemy.X === self.X + dx && enemy.Y === self.Y + dy) {
-      dirs.splice(i, 1);
-      dirs.push([dx * 2, dy * 2]);
-    }
-  }
+  const index = stage.players.indexOf(self);
+  const enemy = stage.players[1 - index];
+
   for (const [dx, dy] of dirs) {
     const X = self.X + dx;
     const Y = self.Y + dy;
@@ -53,7 +48,33 @@ export function getSelectables(self: IPoint, stage: IStage) {
       continue;
     }
 
-    selectables.push({ X, Y });
+    // 相手の駒があれば飛び越える
+    if (enemy.X === X && enemy.Y === Y) {
+      //壁にぶつからないか
+      const isCollided = collided(stage.walls, { X, Y }, dx, dy);
+      if (!isCollided) {
+        // 飛び越える
+        selectables.push({ X: X + dx, Y: Y + dy });
+      } else {
+        // 飛び越えた先に壁がある場合、左右に移動できる
+        const dirs2 = dx
+          ? [
+              [0, -1],
+              [0, 1],
+            ]
+          : [
+              [-1, 0],
+              [1, 0],
+            ];
+        for (const [mX, mY] of dirs2) {
+          if (!collided(stage.walls, { X, Y }, mX, mY)) {
+            selectables.push({ X: X + mX, Y: Y + mY });
+          }
+        }
+      }
+    } else {
+      selectables.push({ X, Y });
+    }
   }
   return selectables;
 }

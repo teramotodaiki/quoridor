@@ -140,6 +140,22 @@ describe("getSelectables", () => {
       [4, 6],
     ]);
   });
+
+  // 飛び越えた先に壁があれば左右に移動できる
+  test("jump over the other piece and there is a wall", () => {
+    const stage = mockStage();
+    stage.players[0] = { X: 4, Y: 4 };
+    stage.players[1] = { X: 4, Y: 5 };
+    stage.addWall(4, 6, "horizontal");
+
+    expect(stage.get(0)).toStrictEqual([
+      [4, 3],
+      [3, 4],
+      [5, 4],
+      [3, 5],
+      [5, 5],
+    ]);
+  });
 });
 
 describe("collided", () => {
