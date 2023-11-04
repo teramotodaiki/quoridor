@@ -59,6 +59,9 @@ export function getSelectables(self: IPoint, stage: IStage) {
 }
 
 export function collided(walls: IWall[], pos: IPoint, dx: number, dy: number) {
+  if (Math.abs(dx) + Math.abs(dy) !== 1) {
+    throw new Error(`(${dx}, ${dy}) is not base vector`);
+  }
   const X = pos.X + dx;
   const Y = pos.Y + dy;
 

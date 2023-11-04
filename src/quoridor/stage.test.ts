@@ -142,11 +142,20 @@ describe("getSelectables", () => {
   });
 });
 
-describe("collide", () => {
+describe("collided", () => {
   test("collide horizontal", () => {
     const pos = { X: 4, Y: 3 };
-    const wall = { X: 3, Y: 3, direction: "horizontal" } as const;
+    const wall = { X: 4, Y: 4, direction: "horizontal" } as const;
     const actual = collided([wall], pos, 0, 1);
     expect(actual).toBe(true);
+  });
+
+  test("not accept invalid direction vector", () => {
+    const pos = { X: 4, Y: 3 };
+    expect(() => collided([], pos, 0, 0)).toThrow();
+    expect(() => collided([], pos, 2, 0)).toThrow();
+    expect(() => collided([], pos, -2, 0)).toThrow();
+    expect(() => collided([], pos, 1, 1)).toThrow();
+    expect(() => collided([], pos, 1, -1)).toThrow();
   });
 });
