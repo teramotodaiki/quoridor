@@ -10,20 +10,24 @@ interface IWall extends IPoint {
   direction: "horizontal" | "vertical";
 }
 
-export interface IStage {
+export class GameManager {
   players: IPoint[];
   walls: IWall[];
+
+  static fromCollections() {
+    const stage = new GameManager();
+    stage.players = Piece.collections;
+    stage.walls = Wall.collections;
+    return stage;
+  }
+
+  constructor() {
+    this.players = [];
+    this.walls = [];
+  }
 }
 
-export function stageFromCollections() {
-  const stage: IStage = {
-    players: Piece.collections,
-    walls: Wall.collections,
-  };
-  return stage;
-}
-
-export function getSelectables(self: IPoint, stage: IStage) {
+export function getSelectables(self: IPoint, stage: GameManager) {
   const selectables: { X: number; Y: number }[] = [];
   const dirs = [
     [0, -1],

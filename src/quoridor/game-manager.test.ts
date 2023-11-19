@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { IStage, collided, getSelectables } from "./game-manager";
+import { GameManager, collided, getSelectables } from "./game-manager";
 
 // テストしやすいフォーマットに加工する
 function tuple(positions: { X: number; Y: number }[]) {
@@ -11,13 +11,11 @@ function tuple(positions: { X: number; Y: number }[]) {
 
 // テスト用の使いやすい関数
 function mockStage() {
-  const stage: IStage = {
-    players: [
-      { X: 4, Y: 0 },
-      { X: 4, Y: 8 },
-    ],
-    walls: [],
-  };
+  const stage = new GameManager();
+  stage.players = [
+    { X: 4, Y: 0 },
+    { X: 4, Y: 8 },
+  ];
 
   return {
     ...stage,
@@ -35,6 +33,7 @@ function mockStage() {
 describe("getSelectables", () => {
   test("initialized", () => {
     const stage = mockStage();
+
     expect(stage.get(0)).toStrictEqual([
       [3, 0],
       [5, 0],
