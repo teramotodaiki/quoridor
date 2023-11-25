@@ -1,4 +1,5 @@
-import { Graphics } from "pixi.js";
+import { Container, Graphics } from "pixi.js";
+import { Wall } from "./wall";
 
 export class UIWall extends Graphics {
   private static ref = new Map<string, UIWall>();
@@ -49,4 +50,60 @@ export class UIWall extends Graphics {
     this.eventMode = "none";
     this.visible = false;
   }
+}
+
+interface CreateUIWallsParams {
+  nextPlayer: () => void;
+  board: Container;
+}
+
+export function createUIWalls(params: CreateUIWallsParams) {
+  const selectableWallContainer = new Container();
+  let _showingUIWall: UIWall | null = null;
+  const showUIWall = (uiWall: UIWall) => {
+    if (_showingUIWall) {
+      _showingUIWall.alpha = 0;
+    }
+    uiWall.alpha = 1;
+    _showingUIWall = uiWall;
+  };
+  for (let x = 1; x < 9; x++) {
+    for (let y = 1; y < 9; y++) {
+      for (const direction of ["horizontal", "vertical"] as const) {
+        const uiWall = new UIWall(x, y, direction);
+        uiWall.eventMode = "static";
+        uiWall.alpha = 0;
+        uiWall.on("mouseenter", () => {
+          showUIWall(uiWall);
+        });
+        uiWall.on("mouseleave", () => {
+          uiWall.alpha = 0;
+        });
+        uiWall.on("pointertap", () => {
+          // mouseenter or 一度タップしてから、もう一度押すと壁を置く
+          if (uiWall.alpha === 0) {
+            showUIWall(uiWall);
+          } else {
+            const wall = new Wall(x, y, direction);
+            params.board.addChild(wall);
+            params.nextPlayer();
+
+            // このマスと隣のマスにはもう置けない
+            UIWall.get(x, y, direction)?.remove();
+            if (direction === "horizontal") {
+              UIWall.get(x, y, "vertical")?.remove();
+              UIWall.get(x - 1, y, direction)?.remove();
+              UIWall.get(x + 1, y, direction)?.remove();
+            } else {
+              UIWall.get(x, y, "horizontal")?.remove();
+              UIWall.get(x, y - 1, direction)?.remove();
+              UIWall.get(x, y + 1, direction)?.remove();
+            }
+          }
+        });
+        selectableWallContainer.addChild(uiWall);
+      }
+    }
+  }
+  return selectableWallContainer;
 }
