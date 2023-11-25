@@ -57,6 +57,18 @@ export async function init(canvas: HTMLCanvasElement) {
             const wall = new Wall(x, y, direction);
             board.addChild(wall);
             nextPlayer();
+
+            // このマスと隣のマスにはもう置けない
+            UIWall.get(x, y, direction)?.remove();
+            if (direction === "horizontal") {
+              UIWall.get(x, y, "vertical")?.remove();
+              UIWall.get(x - 1, y, direction)?.remove();
+              UIWall.get(x + 1, y, direction)?.remove();
+            } else {
+              UIWall.get(x, y, "horizontal")?.remove();
+              UIWall.get(x, y - 1, direction)?.remove();
+              UIWall.get(x, y + 1, direction)?.remove();
+            }
           }
         });
         selectableWallContainer.addChild(uiWall);

@@ -1,6 +1,11 @@
 import { Graphics } from "pixi.js";
 
 export class UIWall extends Graphics {
+  private static ref = new Map<string, UIWall>();
+  static get(X: number, Y: number, direction: "horizontal" | "vertical") {
+    return UIWall.ref.get(`${X}_${Y}_${direction}`);
+  }
+
   static Width = 8;
   static Height = 64; // 重ならないようにする
 
@@ -8,6 +13,8 @@ export class UIWall extends Graphics {
 
   constructor(X: number, Y: number, direction: "horizontal" | "vertical") {
     super();
+    UIWall.ref.set(`${X}_${Y}_${direction}`, this);
+
     // 回転の中心を中央にする
     this.pivot.x = UIWall.Width / 2;
     this.pivot.y = UIWall.Height / 2;
@@ -36,5 +43,10 @@ export class UIWall extends Graphics {
   }
   set Y(y: number) {
     this.y = y * 64;
+  }
+
+  remove() {
+    this.eventMode = "none";
+    this.visible = false;
   }
 }
