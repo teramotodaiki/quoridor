@@ -58,7 +58,7 @@ interface CreateUIWallsParams {
 }
 
 export function createUIWalls(params: CreateUIWallsParams) {
-  const selectableWallContainer = new Container();
+  const uiWallContainer = new Container();
   let _showingUIWall: UIWall | null = null;
   const showUIWall = (uiWall: UIWall) => {
     if (_showingUIWall) {
@@ -101,9 +101,9 @@ export function createUIWalls(params: CreateUIWallsParams) {
             }
           }
         });
-        selectableWallContainer.addChild(uiWall);
+        uiWallContainer.addChild(uiWall);
       }
     }
   }
-  return selectableWallContainer;
+  return uiWallContainer;
 }

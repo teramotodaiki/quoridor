@@ -1,5 +1,6 @@
+import { Container } from "pixi.js";
 import { describe, expect, test } from "vitest";
-import { UIWall } from "./ui-wall";
+import { UIWall, createUIWalls } from "./ui-wall";
 
 describe("UIWAll", () => {
   test("new UIWall", () => {
@@ -14,5 +15,14 @@ describe("UIWAll", () => {
     expect(vertical.Y).toBe(4);
     expect(vertical.direction).toBe("vertical");
     expect(UIWall.get(3, 4, "vertical")).toBe(vertical);
+  });
+});
+
+describe("createUIWalls", () => {
+  test("UIWallが作られること", () => {
+    const nextPlayer = () => {};
+    const board = new Container();
+    const uiWallContainer = createUIWalls({ nextPlayer, board });
+    expect(uiWallContainer.children.length).toBe(128);
   });
 });
