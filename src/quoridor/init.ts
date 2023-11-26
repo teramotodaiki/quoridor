@@ -1,6 +1,7 @@
 import { Application, Assets, Container, Graphics, Sprite } from "pixi.js";
 import { Piece } from "./piece";
 import { createUIWalls } from "./ui-wall";
+import { Wall } from "./wall";
 import { WinEffect } from "./win-effect";
 
 export async function init(canvas: HTMLCanvasElement) {
@@ -28,8 +29,11 @@ export async function init(canvas: HTMLCanvasElement) {
 
   // 選択可能な壁を表示する
   const uiWallContainer = createUIWalls({
-    board,
-    nextPlayer,
+    onTap({ X, Y, direction }) {
+      const wall = new Wall(X, Y, direction);
+      board.addChild(wall);
+      nextPlayer();
+    },
   });
   board.addChild(uiWallContainer);
 

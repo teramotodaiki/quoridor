@@ -1,5 +1,4 @@
 import { Container, Graphics } from "pixi.js";
-import { Wall } from "./wall";
 
 export class UIWall extends Graphics {
   private static ref = new Map<string, UIWall>();
@@ -11,8 +10,14 @@ export class UIWall extends Graphics {
   static Height = 64; // 重ならないようにする
 
   direction: "horizontal" | "vertical";
+  onTap: (self: UIWall) => void;
 
-  constructor(X: number, Y: number, direction: "horizontal" | "vertical") {
+  constructor(
+    X: number,
+    Y: number,
+    direction: "horizontal" | "vertical",
+    onTap: (self: UIWall) => void
+  ) {
     super();
     UIWall.ref.set(`${X}_${Y}_${direction}`, this);
 
@@ -22,6 +27,10 @@ export class UIWall extends Graphics {
     this.X = X;
     this.Y = Y;
     this.direction = direction;
+
+    this.eventMode = "static";
+    this.alpha = 0;
+    this.onTap = onTap;
 
     this.beginFill("0x8a2be2");
     this.drawRect(0, 0, UIWall.Width, UIWall.Height);
@@ -50,57 +59,65 @@ export class UIWall extends Graphics {
     this.eventMode = "none";
     this.visible = false;
   }
+
+  show() {
+    this.alpha = 1;
+  }
+
+  hide() {
+    this.alpha = 0;
+  }
+
+  static hideAll() {
+    for (const uiWall of UIWall.ref.values()) {
+      uiWall.hide();
+    }
+  }
+
+  onmouseenter = () => {
+    UIWall.hideAll();
+    this.show();
+  };
+
+  onmouseleave = () => {
+    this.hide();
+  };
+
+  onpointertap = () => {
+    // mouseenter or 一度タップしてから、もう一度押すと壁を置く
+    if (this.alpha === 0) {
+      UIWall.hideAll();
+      this.show();
+    } else {
+      const { X, Y, direction } = this;
+
+      // このマスと隣のマスにはもう置けない
+      UIWall.get(X, Y, direction)?.remove();
+      if (direction === "horizontal") {
+        UIWall.get(X, Y, "vertical")?.remove();
+        UIWall.get(X - 1, Y, direction)?.remove();
+        UIWall.get(X + 1, Y, direction)?.remove();
+      } else {
+        UIWall.get(X, Y, "horizontal")?.remove();
+        UIWall.get(X, Y - 1, direction)?.remove();
+        UIWall.get(X, Y + 1, direction)?.remove();
+      }
+
+      this.onTap(this);
+    }
+  };
 }
 
 interface CreateUIWallsParams {
-  nextPlayer: () => void;
-  board: Container;
+  onTap(self: UIWall): void;
 }
 
 export function createUIWalls(params: CreateUIWallsParams) {
   const uiWallContainer = new Container();
-  let _showingUIWall: UIWall | null = null;
-  const showUIWall = (uiWall: UIWall) => {
-    if (_showingUIWall) {
-      _showingUIWall.alpha = 0;
-    }
-    uiWall.alpha = 1;
-    _showingUIWall = uiWall;
-  };
   for (let x = 1; x < 9; x++) {
     for (let y = 1; y < 9; y++) {
       for (const direction of ["horizontal", "vertical"] as const) {
-        const uiWall = new UIWall(x, y, direction);
-        uiWall.eventMode = "static";
-        uiWall.alpha = 0;
-        uiWall.on("mouseenter", () => {
-          showUIWall(uiWall);
-        });
-        uiWall.on("mouseleave", () => {
-          uiWall.alpha = 0;
-        });
-        uiWall.on("pointertap", () => {
-          // mouseenter or 一度タップしてから、もう一度押すと壁を置く
-          if (uiWall.alpha === 0) {
-            showUIWall(uiWall);
-          } else {
-            const wall = new Wall(x, y, direction);
-            params.board.addChild(wall);
-            params.nextPlayer();
-
-            // このマスと隣のマスにはもう置けない
-            UIWall.get(x, y, direction)?.remove();
-            if (direction === "horizontal") {
-              UIWall.get(x, y, "vertical")?.remove();
-              UIWall.get(x - 1, y, direction)?.remove();
-              UIWall.get(x + 1, y, direction)?.remove();
-            } else {
-              UIWall.get(x, y, "horizontal")?.remove();
-              UIWall.get(x, y - 1, direction)?.remove();
-              UIWall.get(x, y + 1, direction)?.remove();
-            }
-          }
-        });
+        const uiWall = new UIWall(x, y, direction, params.onTap);
         uiWallContainer.addChild(uiWall);
       }
     }
