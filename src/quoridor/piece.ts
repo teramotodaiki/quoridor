@@ -33,7 +33,8 @@ export class Piece extends Sprite {
    */
   showSelectableTiles(container: Container, callback: () => void) {
     const stage = GameManager.fromCollections();
-    const selectables = getSelectables(this, stage);
+    const pIndex = stage.players.indexOf(this);
+    const selectables = getSelectables(pIndex, this, stage);
 
     for (const { X, Y } of selectables) {
       const tile = new SelectableTile(X, Y);

@@ -27,7 +27,11 @@ export class GameManager {
   }
 }
 
-export function getSelectables(self: IPoint, stage: GameManager) {
+export function getSelectables(
+  pIndex: number,
+  self: IPoint,
+  stage: GameManager
+) {
   const selectables: { X: number; Y: number }[] = [];
   const dirs = [
     [0, -1],
@@ -35,8 +39,7 @@ export function getSelectables(self: IPoint, stage: GameManager) {
     [-1, 0],
     [1, 0],
   ];
-  const index = stage.players.indexOf(self);
-  const enemy = stage.players[1 - index];
+  const enemy = stage.players[1 - pIndex];
 
   for (const [dx, dy] of dirs) {
     const X = self.X + dx;

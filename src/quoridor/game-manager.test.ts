@@ -21,7 +21,7 @@ function mockStage() {
     ...stage,
     get(player: number) {
       const target = stage.players[player];
-      const selectables = getSelectables(target, stage);
+      const selectables = getSelectables(player, target, stage);
       return tuple(selectables);
     },
     addWall(X: number, Y: number, direction: "horizontal" | "vertical") {
