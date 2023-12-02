@@ -14,7 +14,7 @@ function App() {
 
   return (
     <>
-      <h1>Quoridor</h1>
+      {/* {<h1>Quoridor</h1>} */}
       <canvas id="game" ref={canvasRef}></canvas>
     </>
   );
