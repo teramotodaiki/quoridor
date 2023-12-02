@@ -205,4 +205,17 @@ describe("canReachGoal", () => {
     stage.players[1] = { X: 4, Y: 2 };
     expect(canReachGoal(1, stage)).toBe(true);
   });
+
+  test("Can jump over the opponent", () => {
+    const stage = mockStage();
+    stage.players[0] = { X: 4, Y: 3 };
+    stage.players[1] = { X: 4, Y: 4 };
+    stage.addWall(1, 4, "horizontal");
+    stage.addWall(3, 4, "horizontal");
+    stage.addWall(6, 4, "horizontal");
+    stage.addWall(8, 4, "horizontal");
+    // 相手を飛び越えればゴールにたどり着ける
+    expect(canReachGoal(0, stage)).toBe(true);
+    expect(canReachGoal(1, stage)).toBe(true);
+  });
 });
