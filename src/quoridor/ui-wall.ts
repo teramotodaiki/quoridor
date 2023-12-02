@@ -1,4 +1,5 @@
 import { Container, Graphics } from "pixi.js";
+import { GameManager, canReachGoal } from "./game-manager";
 
 export class UIWall extends Graphics {
   private static ref = new Map<string, UIWall>();
@@ -75,6 +76,9 @@ export class UIWall extends Graphics {
   }
 
   onmouseenter = () => {
+    if (!this.canPut()) {
+      return;
+    }
     UIWall.hideAll();
     this.show();
   };
@@ -86,6 +90,9 @@ export class UIWall extends Graphics {
   onpointertap = () => {
     // mouseenter or 一度タップしてから、もう一度押すと壁を置く
     if (this.alpha === 0) {
+      if (!this.canPut()) {
+        return;
+      }
       UIWall.hideAll();
       this.show();
     } else {
@@ -106,6 +113,27 @@ export class UIWall extends Graphics {
       this.onTap(this);
     }
   };
+
+  canPut() {
+    if (!this.visible || this.eventMode === "none") {
+      return false;
+    }
+
+    // ゴールへの道を完全に塞ぐ場合は置けない
+    const stage = GameManager.fromCollections();
+    const nextStage: GameManager = {
+      ...stage,
+      walls: stage.walls.concat([this]),
+    };
+    for (let pIndex = 0; pIndex < stage.players.length; pIndex++) {
+      if (!canReachGoal(pIndex, nextStage)) {
+        this.remove(); // 壁を置けない場合は消す
+        return false;
+      }
+    }
+
+    return true;
+  }
 }
 
 interface CreateUIWallsParams {

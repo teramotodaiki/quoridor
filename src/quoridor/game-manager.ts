@@ -120,3 +120,32 @@ export function collided(walls: IWall[], pos: IPoint, dx: number, dy: number) {
 
   return false;
 }
+
+/**
+ * 指定したプレイヤーがゴールにたどり着けるかどうか
+ */
+export function canReachGoal(pIndex: number, stage: GameManager) {
+  const visited: boolean[][] = Array.from({ length: 9 }, () => []);
+  const queue: [number, number][] = [];
+
+  const start = stage.players[pIndex];
+  const goalY = pIndex === 0 ? 8 : 0;
+  queue.push([start.X, start.Y]);
+
+  while (queue.length) {
+    const [X, Y] = queue.shift()!;
+    if (Y === goalY) {
+      return true; // ゴールにたどり着けた
+    }
+    visited[X][Y] = true;
+
+    const selectables = getSelectables(pIndex, { X, Y }, stage);
+    for (const point of selectables) {
+      if (!visited[point.X][point.Y]) {
+        queue.push([point.X, point.Y]);
+      }
+    }
+  }
+
+  return false; // ゴールにたどり着けない
+}
