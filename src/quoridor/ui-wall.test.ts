@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 import { UIWall, createUIWalls } from "./ui-wall";
 
-describe("UIWAll", () => {
+describe("UIWall", () => {
   test("new UIWall", () => {
     const onTap = () => {};
     const horizontal = new UIWall(1, 2, "horizontal", onTap);
