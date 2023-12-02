@@ -1,6 +1,11 @@
 import { describe, expect, test } from "vitest";
 
-import { GameManager, collided, getSelectables } from "./game-manager";
+import {
+  GameManager,
+  canReachGoal,
+  collided,
+  getSelectables,
+} from "./game-manager";
 
 // テストしやすいフォーマットに加工する
 function tuple(positions: { X: number; Y: number }[]) {
@@ -172,5 +177,32 @@ describe("collided", () => {
     expect(() => collided([], pos, -2, 0)).toThrow();
     expect(() => collided([], pos, 1, 1)).toThrow();
     expect(() => collided([], pos, 1, -1)).toThrow();
+  });
+});
+
+describe("canReachGoal", () => {
+  test("No walls", () => {
+    const stage = mockStage();
+    // 両方ともゴールにたどり着ける
+    expect(canReachGoal(0, stage)).toBe(true);
+    expect(canReachGoal(1, stage)).toBe(true);
+  });
+
+  test("Across the wall", () => {
+    const stage = mockStage();
+    stage.addWall(1, 4, "horizontal");
+    stage.addWall(3, 4, "horizontal");
+    stage.addWall(5, 4, "horizontal");
+    stage.addWall(7, 4, "horizontal");
+    stage.addWall(8, 4, "vertical");
+    stage.addWall(8, 5, "horizontal");
+    // 両方ともゴールにたどり着けない
+    expect(canReachGoal(0, stage)).toBe(false);
+    expect(canReachGoal(1, stage)).toBe(false);
+    // 壁の向こう側にいればゴールにたどり着ける
+    stage.players[0] = { X: 4, Y: 6 };
+    expect(canReachGoal(0, stage)).toBe(true);
+    stage.players[1] = { X: 4, Y: 2 };
+    expect(canReachGoal(1, stage)).toBe(true);
   });
 });
