@@ -31,8 +31,15 @@
   }
 }
 
-.ui-white,
-.ui-black {
-  flex: 1;
-  align-self: stretch;
+.player {
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+.player-white {
+  align-items: flex-end;
+}
+.player-black {
+  align-items: flex-start;
 }
