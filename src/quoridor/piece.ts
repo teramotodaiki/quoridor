@@ -36,8 +36,7 @@ export class Piece extends Sprite {
     for (const { X, Y } of selectables) {
       const tile = new SelectableTile(X, Y);
       tile.on("pointertap", () => {
-        this.X = X;
-        this.Y = Y;
+        stage.movePiece(X, Y);
         container.removeChildren();
         callback();
       });
