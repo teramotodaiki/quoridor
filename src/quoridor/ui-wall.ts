@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { GameManager, canReachGoal } from "./game-manager";
+import { GameManager, canPutWall } from "./game-manager";
 
 export class UIWall extends Graphics {
   private static ref = new Map<string, UIWall>();
@@ -56,11 +56,6 @@ export class UIWall extends Graphics {
     this.y = y * 64;
   }
 
-  remove() {
-    this.eventMode = "none";
-    this.visible = false;
-  }
-
   show() {
     this.alpha = 1;
   }
@@ -76,7 +71,8 @@ export class UIWall extends Graphics {
   }
 
   onmouseenter = () => {
-    if (!this.canPut()) {
+    const stage = GameManager.fromCollections();
+    if (!canPutWall(stage, this)) {
       return;
     }
     UIWall.hideAll();
@@ -90,50 +86,16 @@ export class UIWall extends Graphics {
   onpointertap = () => {
     // mouseenter or 一度タップしてから、もう一度押すと壁を置く
     if (this.alpha === 0) {
-      if (!this.canPut()) {
+      const stage = GameManager.fromCollections();
+      if (!canPutWall(stage, this)) {
         return;
       }
       UIWall.hideAll();
       this.show();
     } else {
-      const { X, Y, direction } = this;
-
-      // このマスと隣のマスにはもう置けない
-      UIWall.get(X, Y, direction)?.remove();
-      if (direction === "horizontal") {
-        UIWall.get(X, Y, "vertical")?.remove();
-        UIWall.get(X - 1, Y, direction)?.remove();
-        UIWall.get(X + 1, Y, direction)?.remove();
-      } else {
-        UIWall.get(X, Y, "horizontal")?.remove();
-        UIWall.get(X, Y - 1, direction)?.remove();
-        UIWall.get(X, Y + 1, direction)?.remove();
-      }
-
       this.onTap(this);
     }
   };
-
-  canPut() {
-    if (!this.visible || this.eventMode === "none") {
-      return false;
-    }
-
-    // ゴールへの道を完全に塞ぐ場合は置けない
-    const stage = GameManager.fromCollections();
-    const nextStage: GameManager = {
-      ...stage,
-      walls: stage.walls.concat([this]),
-    };
-    for (let pIndex = 0; pIndex < stage.players.length; pIndex++) {
-      if (!canReachGoal(pIndex, nextStage)) {
-        this.remove(); // 壁を置けない場合は消す
-        return false;
-      }
-    }
-
-    return true;
-  }
 }
 
 interface CreateUIWallsParams {

@@ -46,10 +46,5 @@ describe("createUIWalls", () => {
     hori.onpointertap();
     expect(onTap).toHaveBeenCalledOnce();
     expect(onTap).toHaveBeenCalledWith(hori);
-
-    expect(hori.eventMode).toBe("none");
-    expect(vert.eventMode).toBe("none");
-
-    expect(UIWall.get(2, 1, "horizontal")!.eventMode).toBe("none");
   });
 });

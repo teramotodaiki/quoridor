@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import {
   GameManager,
+  canPutWall,
   canReachGoal,
   collided,
   getSelectables,
@@ -217,5 +218,15 @@ describe("canReachGoal", () => {
     // 相手を飛び越えればゴールにたどり着ける
     expect(canReachGoal(0, stage)).toBe(true);
     expect(canReachGoal(1, stage)).toBe(true);
+  });
+});
+
+describe("canPutWall", () => {
+  test("initialized", () => {
+    const stage = mockStage();
+    expect(canPutWall(stage, { X: 1, Y: 2, direction: "horizontal" })).toBe(
+      true
+    );
+    expect(canPutWall(stage, { X: 3, Y: 4, direction: "vertical" })).toBe(true);
   });
 });
