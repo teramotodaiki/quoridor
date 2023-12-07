@@ -12,7 +12,7 @@ interface IWall extends IPoint {
 type IOperation =
   | {
       type: "wall";
-      wall: IWall;
+      wall: Wall;
     }
   | {
       type: "piece";
@@ -228,9 +228,8 @@ export function revert(stage: GameManager) {
     player.Y = before.Y;
   } else {
     const { wall } = last;
-    stage.walls = stage.walls.filter(
-      (w) => w.X !== wall.X || w.Y !== wall.Y || w.direction !== wall.direction
-    );
+    wall.destroy();
+    stage.walls = stage.walls.filter((w) => w !== wall);
   }
   return stage;
 }
