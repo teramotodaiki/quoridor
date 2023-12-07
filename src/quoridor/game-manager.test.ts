@@ -229,4 +229,24 @@ describe("canPutWall", () => {
     );
     expect(canPutWall(stage, { X: 3, Y: 4, direction: "vertical" })).toBe(true);
   });
+
+  test("put a wall by the other wall", () => {
+    const stage = mockStage();
+    stage.addWall(1, 2, "horizontal");
+    expect(canPutWall(stage, { X: 1, Y: 2, direction: "horizontal" })).toBe(
+      false
+    );
+    expect(canPutWall(stage, { X: 2, Y: 2, direction: "horizontal" })).toBe(
+      false
+    );
+    expect(canPutWall(stage, { X: 1, Y: 2, direction: "vertical" })).toBe(
+      false
+    );
+    // 向きが違えば隣にも置ける
+    expect(canPutWall(stage, { X: 2, Y: 2, direction: "vertical" })).toBe(true);
+    // ひとつ上のマスには置ける
+    expect(canPutWall(stage, { X: 1, Y: 1, direction: "horizontal" })).toBe(
+      true
+    );
+  });
 });
