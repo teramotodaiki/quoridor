@@ -149,3 +149,29 @@ export function canReachGoal(pIndex: number, stage: GameManager) {
 
   return false; // ゴールにたどり着けない
 }
+
+export function canPutWall(stage: GameManager, target: IWall) {
+  // すでに置かれている場合や、隣り合うマスには置けない
+  for (const wall of stage.walls) {
+    const dx = Math.abs(wall.X - target.X);
+    const dy = Math.abs(wall.Y - target.Y);
+    if (
+      (wall.X === target.X && wall.Y === target.Y) ||
+      (target.direction === "horizontal" && dx === 1 && dy === 0) ||
+      (target.direction === "vertical" && dx === 0 && dy === 1)
+    ) {
+      return false;
+    }
+  }
+
+  // ゴールへの道を完全に塞ぐ場合は置けない
+  const nextStage = GameManager.fromCopy(stage);
+  nextStage.walls = nextStage.walls.concat([target]);
+  for (let pIndex = 0; pIndex < stage.players.length; pIndex++) {
+    if (!canReachGoal(pIndex, nextStage)) {
+      return false;
+    }
+  }
+
+  return true;
+}
