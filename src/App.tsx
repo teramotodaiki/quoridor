@@ -16,6 +16,9 @@ function App() {
     init({ canvas: canvasRef.current, store });
   }, []);
 
+  const handleRevert = () => {
+  };
+
   return (
     <>
       {/* {<h1>Quoridor</h1>} */}
@@ -25,6 +28,11 @@ function App() {
       <canvas id="game" ref={canvasRef}></canvas>
       <div className="player player-black">
         <span>Black: {remainWallNums[1]}</span>
+      </div>
+      <div className="fixed-menu">
+        <button className="revert-button" onClick={handleRevert}>
+          もどす
+        </button>
       </div>
     </>
   );
