@@ -1,7 +1,6 @@
 import { Graphics } from "pixi.js";
 
 export class Wall extends Graphics {
-  static collections: Wall[] = [];
   static Width = 8;
   static Height = 64 * 2 - 8; // 少し短くすることで視認性を上げる
 
@@ -9,7 +8,6 @@ export class Wall extends Graphics {
 
   constructor(X: number, Y: number, direction: "horizontal" | "vertical") {
     super();
-    Wall.collections.push(this);
     // 回転の中心を中央にする
     this.pivot.x = Wall.Width / 2;
     this.pivot.y = Wall.Height / 2;
