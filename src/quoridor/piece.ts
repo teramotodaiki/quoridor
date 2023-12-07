@@ -3,11 +3,8 @@ import { SelectableTile } from "./selectable-tile";
 import { GameManager, getSelectables } from "./game-manager";
 
 export class Piece extends Sprite {
-  static collections: Piece[] = [];
-
   constructor(texture: Texture, x: number, y: number) {
     super(texture);
-    Piece.collections.push(this);
     this.anchor.set(0.5);
     this.pivot.x = -32;
     this.pivot.y = -16;
@@ -32,7 +29,7 @@ export class Piece extends Sprite {
    * 移動できる候補を表示する
    */
   showSelectableTiles(container: Container, callback: () => void) {
-    const stage = GameManager.fromCollections();
+    const stage = GameManager.singleton;
     const pIndex = stage.players.indexOf(this);
     const selectables = getSelectables(pIndex, this, stage);
 

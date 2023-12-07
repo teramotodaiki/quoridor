@@ -1,4 +1,3 @@
-import { Piece } from "./piece";
 import { Wall } from "./wall";
 
 interface IPoint {
@@ -26,12 +25,7 @@ export class GameManager {
   walls: IWall[] = [];
   operations: IOperation[] = [];
 
-  static fromCollections() {
-    const stage = new GameManager();
-    stage.players = Piece.collections;
-    stage.walls = Wall.collections;
-    return stage;
-  }
+  static singleton: GameManager = new GameManager();
 
   static fromCopy(stage: GameManager) {
     const newStage = new GameManager();
@@ -62,6 +56,7 @@ export class GameManager {
       wall,
     });
     this.walls.push(wall);
+    return wall;
   }
 }
 

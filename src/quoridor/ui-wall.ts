@@ -71,7 +71,7 @@ export class UIWall extends Graphics {
   }
 
   onmouseenter = () => {
-    const stage = GameManager.fromCollections();
+    const stage = GameManager.singleton;
     if (!canPutWall(stage, this)) {
       return;
     }
@@ -86,7 +86,7 @@ export class UIWall extends Graphics {
   onpointertap = () => {
     // mouseenter or 一度タップしてから、もう一度押すと壁を置く
     if (this.alpha === 0) {
-      const stage = GameManager.fromCollections();
+      const stage = GameManager.singleton;
       if (!canPutWall(stage, this)) {
         return;
       }

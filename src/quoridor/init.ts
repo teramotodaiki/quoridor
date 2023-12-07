@@ -2,8 +2,8 @@ import { Application, Assets, Container, Graphics, Sprite } from "pixi.js";
 import { Piece } from "./piece";
 import { Store, remainWallNumsAtom } from "./store";
 import { createUIWalls } from "./ui-wall";
-import { Wall } from "./wall";
 import { WinEffect } from "./win-effect";
+import { GameManager } from "./game-manager";
 
 interface InitParams {
   canvas: HTMLCanvasElement;
@@ -27,6 +27,8 @@ export async function init({ canvas, store }: InitParams) {
     app.view.style.touchAction = "auto";
   }
 
+  const stage = GameManager.singleton;
+
   // load the texture we need
   const textureWhite = await Assets.load("assets/piece_white.png");
   const textureBlack = await Assets.load("assets/piece_black.png");
@@ -42,7 +44,7 @@ export async function init({ canvas, store }: InitParams) {
         );
       });
 
-      const wall = new Wall(X, Y, direction);
+      const wall = stage.addWall(X, Y, direction);
       board.addChild(wall);
       nextPlayer();
     },
@@ -75,6 +77,7 @@ export async function init({ canvas, store }: InitParams) {
   board.addChild(pieceWhite);
   const pieceBlack = new Piece(textureBlack, 4, 8);
   board.addChild(pieceBlack);
+  stage.players = [pieceWhite, pieceBlack];
 
   const background = new Sprite(await Assets.load("assets/background.png"));
   background.pivot.x = 512;
