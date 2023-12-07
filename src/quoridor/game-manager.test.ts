@@ -31,9 +31,6 @@ function mockStage() {
       const selectables = getSelectables(player, target, stage);
       return tuple(selectables);
     },
-    addWall(X: number, Y: number, direction: "horizontal" | "vertical") {
-      stage.walls.push({ X, Y, direction });
-    },
   };
 }
 
@@ -54,9 +51,9 @@ describe("getSelectables", () => {
   });
 
   test("a horizontal wall is by the white", () => {
-    const { stage, get, addWall } = mockStage();
+    const { stage, get } = mockStage();
     // 白の前に壁を置く
-    addWall(4, 1, "horizontal");
+    stage.addWall(4, 1, "horizontal");
     // 横にだけ移動できる
     expect(get(0)).toStrictEqual([
       [3, 0],
@@ -77,9 +74,9 @@ describe("getSelectables", () => {
   });
 
   test("a horizontal wall is by the black", () => {
-    const { stage, get, addWall } = mockStage();
+    const { stage, get } = mockStage();
     // 黒の前も壁を置く
-    addWall(4, 8, "horizontal");
+    stage.addWall(4, 8, "horizontal");
     // 横にだけ移動できる
     expect(get(1)).toStrictEqual([
       [3, 8],
@@ -100,9 +97,9 @@ describe("getSelectables", () => {
   });
 
   test("a vertical wall is by the white", () => {
-    const { stage, get, addWall } = mockStage();
+    const { stage, get } = mockStage();
     // 白の左に壁を置く
-    addWall(4, 1, "vertical");
+    stage.addWall(4, 1, "vertical");
     // 下と右にだけ移動できる
     expect(get(0)).toStrictEqual([
       [5, 0],
@@ -117,9 +114,9 @@ describe("getSelectables", () => {
   });
 
   test("a vertical wall is by the black", () => {
-    const { stage, get, addWall } = mockStage();
+    const { stage, get } = mockStage();
     // 黒の左に壁を置く
-    addWall(4, 8, "vertical");
+    stage.addWall(4, 8, "vertical");
     // 上と右にだけ移動できる
     expect(get(1)).toStrictEqual([
       [4, 7],
@@ -149,10 +146,10 @@ describe("getSelectables", () => {
 
   // 飛び越えた先に壁があれば左右に移動できる
   test("jump over the other piece and there is a wall", () => {
-    const { stage, get, addWall } = mockStage();
+    const { stage, get } = mockStage();
     stage.players[0] = { X: 4, Y: 4 };
     stage.players[1] = { X: 4, Y: 5 };
-    addWall(4, 6, "horizontal");
+    stage.addWall(4, 6, "horizontal");
 
     expect(get(0)).toStrictEqual([
       [4, 3],
@@ -191,13 +188,13 @@ describe("canReachGoal", () => {
   });
 
   test("Across the wall", () => {
-    const { stage, addWall } = mockStage();
-    addWall(1, 4, "horizontal");
-    addWall(3, 4, "horizontal");
-    addWall(5, 4, "horizontal");
-    addWall(7, 4, "horizontal");
-    addWall(8, 4, "vertical");
-    addWall(8, 5, "horizontal");
+    const { stage } = mockStage();
+    stage.addWall(1, 4, "horizontal");
+    stage.addWall(3, 4, "horizontal");
+    stage.addWall(5, 4, "horizontal");
+    stage.addWall(7, 4, "horizontal");
+    stage.addWall(8, 4, "vertical");
+    stage.addWall(8, 5, "horizontal");
     // 両方ともゴールにたどり着けない
     expect(canReachGoal(0, stage)).toBe(false);
     expect(canReachGoal(1, stage)).toBe(false);
@@ -209,13 +206,13 @@ describe("canReachGoal", () => {
   });
 
   test("Can jump over the opponent", () => {
-    const { stage, addWall } = mockStage();
+    const { stage } = mockStage();
     stage.players[0] = { X: 4, Y: 3 };
     stage.players[1] = { X: 4, Y: 4 };
-    addWall(1, 4, "horizontal");
-    addWall(3, 4, "horizontal");
-    addWall(6, 4, "horizontal");
-    addWall(8, 4, "horizontal");
+    stage.addWall(1, 4, "horizontal");
+    stage.addWall(3, 4, "horizontal");
+    stage.addWall(6, 4, "horizontal");
+    stage.addWall(8, 4, "horizontal");
     // 相手を飛び越えればゴールにたどり着ける
     expect(canReachGoal(0, stage)).toBe(true);
     expect(canReachGoal(1, stage)).toBe(true);
