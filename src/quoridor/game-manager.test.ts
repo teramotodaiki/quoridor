@@ -231,9 +231,9 @@ describe("canPutWall", () => {
     expect(canPutWall(stage, { X: 3, Y: 4, direction: "vertical" })).toBe(true);
   });
 
-  test("put a wall by the other wall", () => {
-    const { stage, addWall } = mockStage();
-    addWall(1, 2, "horizontal");
+  test("put walls by the other wall", () => {
+    const { stage } = mockStage();
+    stage.addWall(1, 2, "horizontal");
     expect(canPutWall(stage, { X: 1, Y: 2, direction: "horizontal" })).toBe(
       false
     );
@@ -247,6 +247,14 @@ describe("canPutWall", () => {
     expect(canPutWall(stage, { X: 2, Y: 2, direction: "vertical" })).toBe(true);
     // ひとつ上のマスには置ける
     expect(canPutWall(stage, { X: 1, Y: 1, direction: "horizontal" })).toBe(
+      true
+    );
+
+    stage.addWall(2, 2, "vertical");
+    expect(canPutWall(stage, { X: 2, Y: 2, direction: "horizontal" })).toBe(
+      false
+    );
+    expect(canPutWall(stage, { X: 3, Y: 2, direction: "horizontal" })).toBe(
       true
     );
   });

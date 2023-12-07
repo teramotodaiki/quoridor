@@ -188,10 +188,14 @@ export function canPutWall(stage: GameManager, target: IWall) {
   for (const wall of stage.walls) {
     const dx = Math.abs(wall.X - target.X);
     const dy = Math.abs(wall.Y - target.Y);
+    const horizontal =
+      target.direction === "horizontal" && wall.direction === "horizontal";
+    const vertical =
+      target.direction === "vertical" && wall.direction === "vertical";
     if (
       (wall.X === target.X && wall.Y === target.Y) ||
-      (target.direction === "horizontal" && dx === 1 && dy === 0) ||
-      (target.direction === "vertical" && dx === 0 && dy === 1)
+      (horizontal && dx === 1 && dy === 0) ||
+      (vertical && dx === 0 && dy === 1)
     ) {
       return false;
     }
