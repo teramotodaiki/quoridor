@@ -22,7 +22,7 @@ type IOperation =
 
 export class GameManager {
   players: IPoint[] = [];
-  walls: IWall[] = [];
+  walls: Wall[] = [];
   operations: IOperation[] = [];
 
   static singleton: GameManager = new GameManager();
@@ -183,7 +183,7 @@ export function canReachGoal(pIndex: number, stage: GameManager) {
   return false; // ゴールにたどり着けない
 }
 
-export function canPutWall(stage: GameManager, target: IWall) {
+export function canPutWall(stage: GameManager, target: Wall) {
   // すでに置かれている場合や、隣り合うマスには置けない
   for (const wall of stage.walls) {
     const dx = Math.abs(wall.X - target.X);

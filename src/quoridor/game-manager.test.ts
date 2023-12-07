@@ -8,6 +8,7 @@ import {
   getSelectables,
   revert,
 } from "./game-manager";
+import { Wall } from "./wall";
 
 // テストしやすいフォーマットに加工する
 function tuple(positions: { X: number; Y: number }[]) {
@@ -222,38 +223,24 @@ describe("canReachGoal", () => {
 describe("canPutWall", () => {
   test("initialized", () => {
     const { stage } = mockStage();
-    expect(canPutWall(stage, { X: 1, Y: 2, direction: "horizontal" })).toBe(
-      true
-    );
-    expect(canPutWall(stage, { X: 3, Y: 4, direction: "vertical" })).toBe(true);
+    expect(canPutWall(stage, new Wall(1, 2, "horizontal"))).toBe(true);
+    expect(canPutWall(stage, new Wall(3, 4, "vertical"))).toBe(true);
   });
 
   test("put walls by the other wall", () => {
     const { stage } = mockStage();
     stage.addWall(1, 2, "horizontal");
-    expect(canPutWall(stage, { X: 1, Y: 2, direction: "horizontal" })).toBe(
-      false
-    );
-    expect(canPutWall(stage, { X: 2, Y: 2, direction: "horizontal" })).toBe(
-      false
-    );
-    expect(canPutWall(stage, { X: 1, Y: 2, direction: "vertical" })).toBe(
-      false
-    );
+    expect(canPutWall(stage, new Wall(1, 2, "horizontal"))).toBe(false);
+    expect(canPutWall(stage, new Wall(2, 2, "horizontal"))).toBe(false);
+    expect(canPutWall(stage, new Wall(1, 2, "vertical"))).toBe(false);
     // 向きが違えば隣にも置ける
-    expect(canPutWall(stage, { X: 2, Y: 2, direction: "vertical" })).toBe(true);
+    expect(canPutWall(stage, new Wall(2, 2, "vertical"))).toBe(true);
     // ひとつ上のマスには置ける
-    expect(canPutWall(stage, { X: 1, Y: 1, direction: "horizontal" })).toBe(
-      true
-    );
+    expect(canPutWall(stage, new Wall(1, 1, "horizontal"))).toBe(true);
 
     stage.addWall(2, 2, "vertical");
-    expect(canPutWall(stage, { X: 2, Y: 2, direction: "horizontal" })).toBe(
-      false
-    );
-    expect(canPutWall(stage, { X: 3, Y: 2, direction: "horizontal" })).toBe(
-      true
-    );
+    expect(canPutWall(stage, new Wall(2, 2, "horizontal"))).toBe(false);
+    expect(canPutWall(stage, new Wall(3, 2, "horizontal"))).toBe(true);
   });
 });
 
