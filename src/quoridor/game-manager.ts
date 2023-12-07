@@ -10,9 +10,21 @@ interface IWall extends IPoint {
   direction: "horizontal" | "vertical";
 }
 
+type IOperation =
+  | {
+      type: "wall";
+      wall: IWall;
+    }
+  | {
+      type: "piece";
+      before: IPoint;
+      after: IPoint;
+    };
+
 export class GameManager {
-  players: IPoint[];
-  walls: IWall[];
+  players: IPoint[] = [];
+  walls: IWall[] = [];
+  operations: IOperation[] = [];
 
   static fromCollections() {
     const stage = new GameManager();
@@ -21,9 +33,35 @@ export class GameManager {
     return stage;
   }
 
-  constructor() {
-    this.players = [];
-    this.walls = [];
+  static fromCopy(stage: GameManager) {
+    const newStage = new GameManager();
+    newStage.players = stage.players.slice();
+    newStage.walls = stage.walls.slice();
+    newStage.operations = stage.operations.slice();
+    return newStage;
+  }
+
+  constructor() {}
+
+  movePiece(X: number, Y: number) {
+    const pIndex = this.operations.length % this.players.length;
+    const player = this.players[pIndex];
+    this.operations.push({
+      type: "piece",
+      before: { X: player.X, Y: player.Y },
+      after: { X, Y },
+    });
+    player.X = X;
+    player.Y = Y;
+  }
+
+  addWall(X: number, Y: number, direction: "horizontal" | "vertical") {
+    const wall = new Wall(X, Y, direction);
+    this.operations.push({
+      type: "wall",
+      wall,
+    });
+    this.walls.push(wall);
   }
 }
 
@@ -174,4 +212,27 @@ export function canPutWall(stage: GameManager, target: IWall) {
   }
 
   return true;
+}
+
+/** 最後の行動を１つ戻す */
+export function revert(source: GameManager) {
+  const stage = GameManager.fromCopy(source);
+  const last = stage.operations.pop();
+  if (!last) {
+    return stage;
+  }
+  const pIndex = stage.operations.length % stage.players.length;
+
+  if (last.type === "piece") {
+    const { before } = last;
+    const player = stage.players[pIndex];
+    player.X = before.X;
+    player.Y = before.Y;
+  } else {
+    const { wall } = last;
+    stage.walls = stage.walls.filter(
+      (w) => w.X !== wall.X || w.Y !== wall.Y || w.direction !== wall.direction
+    );
+  }
+  return stage;
 }

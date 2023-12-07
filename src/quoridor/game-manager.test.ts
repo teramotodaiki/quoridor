@@ -6,6 +6,7 @@ import {
   canReachGoal,
   collided,
   getSelectables,
+  revert,
 } from "./game-manager";
 
 // テストしやすいフォーマットに加工する
@@ -248,5 +249,35 @@ describe("canPutWall", () => {
     expect(canPutWall(stage, { X: 1, Y: 1, direction: "horizontal" })).toBe(
       true
     );
+  });
+});
+
+describe("revert", () => {
+  test("initialized", () => {
+    const { stage } = mockStage();
+    const reverted = revert(stage);
+    expect(reverted.players).toBe(reverted.players);
+    expect(reverted.walls).toBe(reverted.walls);
+    expect(reverted.operations).toBe(reverted.operations);
+  });
+
+  test("revert piece movement", () => {
+    const { stage } = mockStage();
+    stage.movePiece(4, 1);
+    const reverted = revert(stage);
+    expect(reverted.players[0]).toContain({ X: 4, Y: 0 });
+  });
+
+  test("revert wall placement", () => {
+    const { stage } = mockStage();
+    stage.addWall(1, 2, "horizontal");
+    stage.addWall(3, 4, "vertical");
+    const reverted = revert(stage);
+    expect(reverted.walls.length).toBe(1);
+    expect(reverted.walls[0]).toContain({
+      X: 1,
+      Y: 2,
+      direction: "horizontal",
+    });
   });
 });
