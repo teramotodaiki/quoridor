@@ -261,11 +261,20 @@ describe("revert", () => {
     expect(reverted.operations).toBe(reverted.operations);
   });
 
-  test("revert piece movement", () => {
+  test("revert white piece movement", () => {
     const { stage } = mockStage();
     stage.movePiece(4, 1);
     const reverted = revert(stage);
     expect(reverted.players[0]).toContain({ X: 4, Y: 0 });
+  });
+
+  test("revert black piece movement", () => {
+    const { stage } = mockStage();
+    stage.movePiece(4, 1);
+    stage.movePiece(4, 7);
+    const reverted = revert(stage);
+    expect(reverted.players[0]).toContain({ X: 4, Y: 1 });
+    expect(reverted.players[1]).toContain({ X: 4, Y: 8 });
   });
 
   test("revert wall placement", () => {
