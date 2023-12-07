@@ -215,8 +215,7 @@ export function canPutWall(stage: GameManager, target: IWall) {
 }
 
 /** 最後の行動を１つ戻す */
-export function revert(source: GameManager) {
-  const stage = GameManager.fromCopy(source);
+export function revert(stage: GameManager) {
   const last = stage.operations.pop();
   if (!last) {
     return stage;

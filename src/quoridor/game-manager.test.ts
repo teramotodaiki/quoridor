@@ -255,35 +255,35 @@ describe("canPutWall", () => {
 describe("revert", () => {
   test("initialized", () => {
     const { stage } = mockStage();
-    const reverted = revert(stage);
-    expect(reverted.players).toBe(reverted.players);
-    expect(reverted.walls).toBe(reverted.walls);
-    expect(reverted.operations).toBe(reverted.operations);
+    revert(stage);
+    expect(stage.players).toBe(stage.players);
+    expect(stage.walls).toBe(stage.walls);
+    expect(stage.operations).toBe(stage.operations);
   });
 
   test("revert white piece movement", () => {
     const { stage } = mockStage();
     stage.movePiece(4, 1);
-    const reverted = revert(stage);
-    expect(reverted.players[0]).toContain({ X: 4, Y: 0 });
+    revert(stage);
+    expect(stage.players[0]).toContain({ X: 4, Y: 0 });
   });
 
   test("revert black piece movement", () => {
     const { stage } = mockStage();
     stage.movePiece(4, 1);
     stage.movePiece(4, 7);
-    const reverted = revert(stage);
-    expect(reverted.players[0]).toContain({ X: 4, Y: 1 });
-    expect(reverted.players[1]).toContain({ X: 4, Y: 8 });
+    revert(stage);
+    expect(stage.players[0]).toContain({ X: 4, Y: 1 });
+    expect(stage.players[1]).toContain({ X: 4, Y: 8 });
   });
 
   test("revert wall placement", () => {
     const { stage } = mockStage();
     stage.addWall(1, 2, "horizontal");
     stage.addWall(3, 4, "vertical");
-    const reverted = revert(stage);
-    expect(reverted.walls.length).toBe(1);
-    expect(reverted.walls[0]).toContain({
+    revert(stage);
+    expect(stage.walls.length).toBe(1);
+    expect(stage.walls[0]).toContain({
       X: 1,
       Y: 2,
       direction: "horizontal",
