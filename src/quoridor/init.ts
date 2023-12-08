@@ -1,16 +1,14 @@
 import { Application, Assets, Container, Graphics, Sprite } from "pixi.js";
+import { GameManager } from "./game-manager";
 import { Piece } from "./piece";
-import { Store, remainWallNumsAtom } from "./store";
 import { createUIWalls } from "./ui-wall";
 import { WinEffect } from "./win-effect";
-import { GameManager } from "./game-manager";
 
 interface InitParams {
   canvas: HTMLCanvasElement;
-  store: Store;
 }
 
-export async function init({ canvas, store }: InitParams) {
+export async function init({ canvas }: InitParams) {
   // The application will create a renderer using WebGL, if possible,
   // with a fallback to a canvas render. It will also setup the ticker
   // and the root stage PIXI.Container
@@ -38,12 +36,6 @@ export async function init({ canvas, store }: InitParams) {
   // 選択可能な壁を表示する
   const uiWallContainer = createUIWalls({
     onTap({ X, Y, direction }) {
-      store.set(remainWallNumsAtom, (remainWallNums) => {
-        return remainWallNums.map((num, i) =>
-          i === stage.currentPlayer ? num - 1 : num
-        );
-      });
-
       const wall = stage.addWall(X, Y, direction);
       board.addChild(wall);
     },
