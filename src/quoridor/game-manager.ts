@@ -1,6 +1,7 @@
 import { Container } from "pixi.js";
-import { Wall } from "./wall";
+import { Store } from "./base-store";
 import { Piece } from "./piece";
+import { Wall } from "./wall";
 
 interface IPoint {
   X: number;
@@ -22,13 +23,24 @@ type IOperation =
       after: IPoint;
     };
 
-export class GameManager {
+export class GameManager extends Store {
   players: Piece[] = [];
   walls: Wall[] = [];
   operations: IOperation[] = [];
 
   get currentPlayer() {
     return this.operations.length % this.players.length;
+  }
+  get remainWallNums() {
+    const nums = this.players.map(() => 10); // 最初は10枚ずつ
+    for (let index = 0; index < this.operations.length; index++) {
+      const element = this.operations[index];
+      if (element.type === "wall") {
+        const pIndex = index % this.players.length;
+        nums[pIndex] -= 1;
+      }
+    }
+    return nums;
   }
 
   selectableTilesContainer = new Container();
@@ -42,8 +54,6 @@ export class GameManager {
     newStage.operations = stage.operations.slice();
     return newStage;
   }
-
-  constructor() {}
 
   movePiece(X: number, Y: number) {
     const pIndex = this.operations.length % this.players.length;
@@ -75,6 +85,7 @@ export class GameManager {
 
     const player = this.players[this.currentPlayer];
     player.showSelectableTiles();
+    this.emit();
   }
 
   /** 最後の行動を１つ戻す */

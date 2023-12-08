@@ -1,15 +1,14 @@
-import { createStore, useAtom } from "jotai";
-import { useEffect, useRef, useState } from "react";
+import { createStore } from "jotai";
+import { useEffect, useReducer, useRef, useState } from "react";
 import "./App.css";
-import { init } from "./quoridor/init"; // Dynamic importしてもいい
-import { remainWallNumsAtom } from "./quoridor/store";
 import { GameManager } from "./quoridor/game-manager";
+import { init } from "./quoridor/init"; // Dynamic importしてもいい
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [store] = useState(createStore);
-  const [remainWallNums] = useAtom(remainWallNumsAtom, { store });
   const gameManagerRef = useRef<GameManager | undefined>(undefined);
+  const forceUpdate = useReducer((i) => i + 1, 0)[1];
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -17,12 +16,16 @@ function App() {
     }
     init({ canvas: canvasRef.current, store }).then((gameManager) => {
       gameManagerRef.current = gameManager;
+      gameManagerRef.current.subscribe(forceUpdate);
+      forceUpdate();
     });
   }, []);
 
   const handleRevert = () => {
     gameManagerRef.current?.revert();
   };
+
+  const remainWallNums = gameManagerRef.current?.remainWallNums ?? [0, 0];
 
   return (
     <>
