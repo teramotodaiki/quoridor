@@ -3,20 +3,25 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { init } from "./quoridor/init"; // Dynamic importしてもいい
 import { remainWallNumsAtom } from "./quoridor/store";
+import { GameManager } from "./quoridor/game-manager";
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [store] = useState(createStore);
   const [remainWallNums] = useAtom(remainWallNumsAtom, { store });
+  const gameManagerRef = useRef<GameManager | undefined>(undefined);
 
   useEffect(() => {
     if (!canvasRef.current) {
       return;
     }
-    init({ canvas: canvasRef.current, store });
+    init({ canvas: canvasRef.current, store }).then((gameManager) => {
+      gameManagerRef.current = gameManager;
+    });
   }, []);
 
   const handleRevert = () => {
+    gameManagerRef.current?.revert();
   };
 
   return (
