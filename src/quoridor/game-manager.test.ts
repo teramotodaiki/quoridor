@@ -267,6 +267,13 @@ describe("canPutWall", () => {
     expect(canPutWall(stage, new Wall(2, 2, "horizontal"))).toBe(false);
     expect(canPutWall(stage, new Wall(3, 2, "horizontal"))).toBe(true);
   });
+
+  test("謎のバグ", () => {
+    const { stage } = mockStage();
+    stage.players[0] = p(0, 2);
+    stage.players[1] = p(0, 7);
+    expect(canPutWall(stage, new Wall(1, 1, "horizontal"))).toBe(true);
+  });
 });
 
 describe("revert", () => {
