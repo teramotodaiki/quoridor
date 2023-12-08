@@ -6,7 +6,6 @@ import {
   canReachGoal,
   collided,
   getSelectables,
-  revert,
 } from "./game-manager";
 import { Wall } from "./wall";
 
@@ -247,7 +246,7 @@ describe("canPutWall", () => {
 describe("revert", () => {
   test("initialized", () => {
     const { stage } = mockStage();
-    revert(stage);
+    stage.revert();
     expect(stage.players).toBe(stage.players);
     expect(stage.walls).toBe(stage.walls);
     expect(stage.operations).toBe(stage.operations);
@@ -256,7 +255,7 @@ describe("revert", () => {
   test("revert white piece movement", () => {
     const { stage } = mockStage();
     stage.movePiece(4, 1);
-    revert(stage);
+    stage.revert();
     expect(stage.players[0]).toContain({ X: 4, Y: 0 });
   });
 
@@ -264,7 +263,7 @@ describe("revert", () => {
     const { stage } = mockStage();
     stage.movePiece(4, 1);
     stage.movePiece(4, 7);
-    revert(stage);
+    stage.revert();
     expect(stage.players[0]).toContain({ X: 4, Y: 1 });
     expect(stage.players[1]).toContain({ X: 4, Y: 8 });
   });
@@ -273,7 +272,7 @@ describe("revert", () => {
     const { stage } = mockStage();
     stage.addWall(1, 2, "horizontal");
     stage.addWall(3, 4, "vertical");
-    revert(stage);
+    stage.revert();
     expect(stage.walls.length).toBe(1);
     expect(stage.walls[0]).toContain({
       X: 1,

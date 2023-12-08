@@ -58,6 +58,26 @@ export class GameManager {
     this.walls.push(wall);
     return wall;
   }
+
+  /** 最後の行動を１つ戻す */
+  revert() {
+    const last = this.operations.pop();
+    if (!last) {
+      return this;
+    }
+    const pIndex = this.operations.length % this.players.length;
+
+    if (last.type === "piece") {
+      const { before } = last;
+      const player = this.players[pIndex];
+      player.X = before.X;
+      player.Y = before.Y;
+    } else {
+      const { wall } = last;
+      wall.destroy();
+      this.walls = this.walls.filter((w) => w !== wall);
+    }
+  }
 }
 
 export function getSelectables(
@@ -211,25 +231,4 @@ export function canPutWall(stage: GameManager, target: Wall) {
   }
 
   return true;
-}
-
-/** 最後の行動を１つ戻す */
-export function revert(stage: GameManager) {
-  const last = stage.operations.pop();
-  if (!last) {
-    return stage;
-  }
-  const pIndex = stage.operations.length % stage.players.length;
-
-  if (last.type === "piece") {
-    const { before } = last;
-    const player = stage.players[pIndex];
-    player.X = before.X;
-    player.Y = before.Y;
-  } else {
-    const { wall } = last;
-    wall.destroy();
-    stage.walls = stage.walls.filter((w) => w !== wall);
-  }
-  return stage;
 }
