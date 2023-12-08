@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 
+import { Texture } from "pixi.js";
 import {
   GameManager,
   canPutWall,
@@ -8,6 +9,7 @@ import {
   getSelectables,
 } from "./game-manager";
 import { Wall } from "./wall";
+import { Piece } from "./piece";
 
 // テストしやすいフォーマットに加工する
 function tuple(positions: { X: number; Y: number }[]) {
@@ -16,13 +18,14 @@ function tuple(positions: { X: number; Y: number }[]) {
   return tuples;
 }
 
+function p(X: number, Y: number) {
+  return new Piece(Texture.EMPTY, X, Y);
+}
+
 // テスト用の使いやすい関数
 function mockStage() {
-  const stage = new GameManager();
-  stage.players = [
-    { X: 4, Y: 0 },
-    { X: 4, Y: 8 },
-  ];
+  const stage = (GameManager.singleton = new GameManager());
+  stage.players = [p(4, 0), p(4, 8)];
 
   return {
     stage,
@@ -133,8 +136,8 @@ describe("getSelectables", () => {
   // 相手の駒を飛び越える
   test("jump over the other piece", () => {
     const { stage, get } = mockStage();
-    stage.players[0] = { X: 4, Y: 4 };
-    stage.players[1] = { X: 4, Y: 5 };
+    stage.players[0] = p(4, 4);
+    stage.players[1] = p(4, 5);
 
     expect(get(0)).toStrictEqual([
       [4, 3],
@@ -147,8 +150,8 @@ describe("getSelectables", () => {
   // 飛び越えた先に壁があれば左右に移動できる
   test("jump over the other piece and there is a wall", () => {
     const { stage, get } = mockStage();
-    stage.players[0] = { X: 4, Y: 4 };
-    stage.players[1] = { X: 4, Y: 5 };
+    stage.players[0] = p(4, 4);
+    stage.players[1] = p(4, 5);
     stage.addWall(4, 6, "horizontal");
 
     expect(get(0)).toStrictEqual([
@@ -199,16 +202,16 @@ describe("canReachGoal", () => {
     expect(canReachGoal(0, stage)).toBe(false);
     expect(canReachGoal(1, stage)).toBe(false);
     // 壁の向こう側にいればゴールにたどり着ける
-    stage.players[0] = { X: 4, Y: 6 };
+    stage.players[0] = p(4, 6);
     expect(canReachGoal(0, stage)).toBe(true);
-    stage.players[1] = { X: 4, Y: 2 };
+    stage.players[1] = p(4, 2);
     expect(canReachGoal(1, stage)).toBe(true);
   });
 
   test("Can jump over the opponent", () => {
     const { stage } = mockStage();
-    stage.players[0] = { X: 4, Y: 3 };
-    stage.players[1] = { X: 4, Y: 4 };
+    stage.players[0] = p(4, 3);
+    stage.players[1] = p(4, 4);
     stage.addWall(1, 4, "horizontal");
     stage.addWall(3, 4, "horizontal");
     stage.addWall(6, 4, "horizontal");

@@ -1,4 +1,5 @@
 import { Wall } from "./wall";
+import { Piece } from "./piece";
 
 interface IPoint {
   X: number;
@@ -21,7 +22,7 @@ type IOperation =
     };
 
 export class GameManager {
-  players: IPoint[] = [];
+  players: Piece[] = [];
   walls: Wall[] = [];
   operations: IOperation[] = [];
 
