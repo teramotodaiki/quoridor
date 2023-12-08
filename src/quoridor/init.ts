@@ -40,19 +40,17 @@ export async function init({ canvas, store }: InitParams) {
     onTap({ X, Y, direction }) {
       store.set(remainWallNumsAtom, (remainWallNums) => {
         return remainWallNums.map((num, i) =>
-          i === currentPlayer ? num - 1 : num
+          i === stage.currentPlayer ? num - 1 : num
         );
       });
 
       const wall = stage.addWall(X, Y, direction);
       board.addChild(wall);
-      nextPlayer();
     },
   });
   board.addChild(uiWallContainer);
 
-  const selectableTileContainer = new Container();
-  board.addChild(selectableTileContainer);
+  board.addChild(stage.selectableTilesContainer);
 
   // 9x9マスの盤面を作る
   board.x = 32;
@@ -90,30 +88,21 @@ export async function init({ canvas, store }: InitParams) {
 
   app.stage.addChild(board);
 
-  const players = [pieceWhite, pieceBlack];
-  let currentPlayer = 0;
-  let beginTurn = true;
-
-  function nextPlayer() {
-    selectableTileContainer.removeChildren();
-    // 勝敗判定
-    const winner =
-      pieceBlack.Y === 0 ? "black" : pieceWhite.Y === 8 ? "white" : null;
-    if (winner) {
-      const winEffect = new WinEffect(winner);
-      app.stage.addChild(winEffect);
-      return;
-    }
-    // 次のターンへ
-    currentPlayer = (currentPlayer + 1) % players.length;
-    beginTurn = true;
-  }
-
+  let isPlaying = true;
   app.ticker.add(() => {
-    if (beginTurn) {
-      const piece = players[currentPlayer];
-      piece.showSelectableTiles(selectableTileContainer, nextPlayer);
-      beginTurn = false;
+    if (isPlaying) {
+      // 勝敗判定
+      const winner =
+        pieceBlack.Y === 0 ? "black" : pieceWhite.Y === 8 ? "white" : null;
+      if (winner) {
+        const winEffect = new WinEffect(winner);
+        app.stage.addChild(winEffect);
+        isPlaying = false;
+      }
     }
   });
+
+  stage.updateUI(); // 最初のターン
+
+  return GameManager.singleton;
 }

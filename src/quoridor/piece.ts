@@ -1,6 +1,6 @@
-import { Container, Sprite, Texture } from "pixi.js";
-import { SelectableTile } from "./selectable-tile";
+import { Sprite, Texture } from "pixi.js";
 import { GameManager, getSelectables } from "./game-manager";
+import { SelectableTile } from "./selectable-tile";
 
 export class Piece extends Sprite {
   constructor(texture: Texture, x: number, y: number) {
@@ -28,19 +28,20 @@ export class Piece extends Sprite {
   /**
    * 移動できる候補を表示する
    */
-  showSelectableTiles(container: Container, callback: () => void) {
+  showSelectableTiles() {
     const stage = GameManager.singleton;
     const pIndex = stage.players.indexOf(this);
+    if (pIndex === -1) {
+      throw new Error("player not found");
+    }
     const selectables = getSelectables(pIndex, this, stage);
 
     for (const { X, Y } of selectables) {
       const tile = new SelectableTile(X, Y);
       tile.on("pointertap", () => {
         stage.movePiece(X, Y);
-        container.removeChildren();
-        callback();
       });
-      container.addChild(tile);
+      stage.selectableTilesContainer.addChild(tile);
     }
   }
 }

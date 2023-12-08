@@ -1,3 +1,4 @@
+import { Container } from "pixi.js";
 import { Wall } from "./wall";
 import { Piece } from "./piece";
 
@@ -30,6 +31,8 @@ export class GameManager {
     return this.operations.length % this.players.length;
   }
 
+  selectableTilesContainer = new Container();
+
   static singleton: GameManager = new GameManager();
 
   static fromCopy(stage: GameManager) {
@@ -52,6 +55,7 @@ export class GameManager {
     });
     player.X = X;
     player.Y = Y;
+    this.updateUI();
   }
 
   addWall(X: number, Y: number, direction: "horizontal" | "vertical") {
@@ -61,7 +65,16 @@ export class GameManager {
       wall,
     });
     this.walls.push(wall);
+    this.updateUI();
     return wall;
+  }
+
+  /** 次のターンに進む */
+  updateUI() {
+    this.selectableTilesContainer.removeChildren();
+
+    const player = this.players[this.currentPlayer];
+    player.showSelectableTiles();
   }
 
   /** 最後の行動を１つ戻す */
@@ -82,6 +95,8 @@ export class GameManager {
       wall.destroy();
       this.walls = this.walls.filter((w) => w !== wall);
     }
+
+    this.updateUI();
   }
 }
 
