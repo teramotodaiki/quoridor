@@ -284,3 +284,26 @@ describe("revert", () => {
     });
   });
 });
+
+describe("currentPlayer", () => {
+  test("initialized", () => {
+    const { stage } = mockStage();
+    expect(stage.currentPlayer).toBe(0);
+  });
+
+  test("move pieces", () => {
+    const { stage } = mockStage();
+    stage.movePiece(4, 1);
+    expect(stage.currentPlayer).toBe(1);
+    stage.movePiece(4, 7);
+    expect(stage.currentPlayer).toBe(0);
+  });
+
+  test("put walls", () => {
+    const { stage } = mockStage();
+    stage.addWall(1, 2, "horizontal");
+    expect(stage.currentPlayer).toBe(1);
+    stage.addWall(3, 4, "vertical");
+    expect(stage.currentPlayer).toBe(0);
+  });
+});

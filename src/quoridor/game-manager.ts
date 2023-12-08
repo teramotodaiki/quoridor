@@ -26,6 +26,10 @@ export class GameManager {
   walls: Wall[] = [];
   operations: IOperation[] = [];
 
+  get currentPlayer() {
+    return this.operations.length % this.players.length;
+  }
+
   static singleton: GameManager = new GameManager();
 
   static fromCopy(stage: GameManager) {
