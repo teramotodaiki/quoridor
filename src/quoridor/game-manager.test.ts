@@ -37,6 +37,29 @@ function mockStage() {
   };
 }
 
+describe("movePiece", () => {
+  test("move pieces", () => {
+    const { stage } = mockStage();
+    stage.movePiece(4, 1);
+    expect(stage.players[0]).toContain({ X: 4, Y: 1 });
+    expect(stage.players[1]).toContain({ X: 4, Y: 8 });
+    stage.movePiece(4, 7);
+    expect(stage.players[0]).toContain({ X: 4, Y: 1 });
+    expect(stage.players[1]).toContain({ X: 4, Y: 7 });
+  });
+});
+
+describe("addWall", () => {
+  test("add walls", () => {
+    const { stage } = mockStage();
+    stage.addWall(1, 2, "horizontal");
+    expect(stage.walls[0]).toContain({ X: 1, Y: 2, direction: "horizontal" });
+    stage.addWall(3, 4, "vertical");
+    expect(stage.walls[1]).toContain({ X: 3, Y: 4, direction: "vertical" });
+    expect(stage.walls.length).toBe(2);
+  });
+});
+
 describe("getSelectables", () => {
   test("initialized", () => {
     const { get } = mockStage();
