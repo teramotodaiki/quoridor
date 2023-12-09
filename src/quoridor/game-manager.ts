@@ -1,6 +1,7 @@
 import { Container } from "pixi.js";
 import { Store } from "./base-store";
 import { Piece } from "./piece";
+import { UIWall } from "./ui-wall";
 import { Wall } from "./wall";
 
 interface IPoint {
@@ -96,6 +97,7 @@ export class GameManager extends Store {
   /** 次のターンに進む */
   updateUI() {
     this.selectableTilesContainer.removeChildren();
+    UIWall.hideAll();
 
     const player = this.players[this.currentPlayer];
     player.showSelectableTiles();
