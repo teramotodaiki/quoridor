@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 
-import { Texture } from "pixi.js";
 import {
   GameManager,
   canPutWall,
@@ -8,8 +7,8 @@ import {
   collided,
   getSelectables,
 } from "./game-manager";
-import { Wall } from "./wall";
 import { Piece } from "./piece";
+import { Wall } from "./wall";
 
 // テストしやすいフォーマットに加工する
 function tuple(positions: { X: number; Y: number }[]) {
@@ -19,7 +18,7 @@ function tuple(positions: { X: number; Y: number }[]) {
 }
 
 function p(X: number, Y: number) {
-  return new Piece(Texture.EMPTY, X, Y);
+  return new Piece(X, Y);
 }
 
 // テスト用の使いやすい関数
