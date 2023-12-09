@@ -1,4 +1,4 @@
-import { Application, Assets, Container, Graphics, Sprite } from "pixi.js";
+import { Application, Container, Graphics, Sprite, Texture } from "pixi.js";
 import { GameManager } from "./game-manager";
 import { Piece } from "./piece";
 import { createUIWalls } from "./ui-wall";
@@ -8,7 +8,7 @@ interface InitParams {
   canvas: HTMLCanvasElement;
 }
 
-export async function init({ canvas }: InitParams) {
+export function init({ canvas }: InitParams) {
   // The application will create a renderer using WebGL, if possible,
   // with a fallback to a canvas render. It will also setup the ticker
   // and the root stage PIXI.Container
@@ -29,10 +29,6 @@ export async function init({ canvas }: InitParams) {
   }
 
   const stage = GameManager.singleton;
-
-  // load the texture we need
-  const textureWhite = await Assets.load("assets/piece_white.png");
-  const textureBlack = await Assets.load("assets/piece_black.png");
 
   const board = new Container();
 
@@ -66,13 +62,15 @@ export async function init({ canvas }: InitParams) {
   }
 
   // プレイヤーの駒
-  const pieceWhite = new Piece(textureWhite, 4, 0);
+  const pieceWhite = new Piece(4, 0);
+  pieceWhite.texture = Texture.from("assets/piece_white.png");
   board.addChild(pieceWhite);
-  const pieceBlack = new Piece(textureBlack, 4, 8);
+  const pieceBlack = new Piece(4, 8);
+  pieceBlack.texture = Texture.from("assets/piece_black.png");
   board.addChild(pieceBlack);
   stage.players = [pieceWhite, pieceBlack];
 
-  const background = new Sprite(await Assets.load("assets/background.png"));
+  const background = Sprite.from("assets/background.png");
   background.pivot.x = 512;
   background.pivot.y = 512;
   background.width = 1024 * 1.05;

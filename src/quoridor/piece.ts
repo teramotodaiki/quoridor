@@ -1,10 +1,10 @@
-import { Sprite, Texture } from "pixi.js";
+import { Sprite } from "pixi.js";
 import { GameManager, getSelectables } from "./game-manager";
 import { SelectableTile } from "./selectable-tile";
 
 export class Piece extends Sprite {
-  constructor(texture: Texture, x: number, y: number) {
-    super(texture);
+  constructor(x: number, y: number) {
+    super();
     this.anchor.set(0.5);
     this.pivot.x = -32;
     this.pivot.y = -16;

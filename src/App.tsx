@@ -12,11 +12,10 @@ function App() {
     if (!canvasRef.current) {
       return;
     }
-    init({ canvas: canvasRef.current }).then((gameManager) => {
-      gameManagerRef.current = gameManager;
-      gameManagerRef.current.subscribe(forceUpdate);
-      forceUpdate();
-    });
+    const gameManager = init({ canvas: canvasRef.current });
+    gameManagerRef.current = gameManager;
+    gameManagerRef.current.subscribe(forceUpdate);
+    forceUpdate();
   }, []);
 
   const handleRevert = () => {
