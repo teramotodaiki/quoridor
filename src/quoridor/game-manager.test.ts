@@ -184,6 +184,16 @@ describe("getSelectables", () => {
       [3, 5],
       [5, 5],
     ]);
+
+    // ただし、壁の向こう側には移動できない
+    stage.players[0] = p(0, 4);
+    stage.players[1] = p(0, 5);
+    stage.addWall(1, 6, "horizontal");
+    expect(get(0)).toStrictEqual([
+      [0, 3],
+      [1, 4],
+      [1, 5],
+    ]);
   });
 });
 
