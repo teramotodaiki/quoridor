@@ -70,17 +70,13 @@ export class UIWall extends Graphics {
     }
   }
 
-  onmouseenter = () => {
+  onpointerenter = () => {
     const stage = GameManager.singleton;
     if (!canPutWall(stage, this)) {
       return;
     }
     UIWall.hideAll();
     this.show();
-  };
-
-  onmouseleave = () => {
-    this.hide();
   };
 
   onpointertap = () => {
