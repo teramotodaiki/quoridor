@@ -39,6 +39,9 @@ function App() {
         <span>Black: {remainWallNums[1]}</span>
       </div>
       <div className="fixed-menu">
+        <a href="https://www.google.com/search?q=quoridor" target="blank">
+          Quoridorとは？
+        </a>
         <button
           className="revert-button"
           onClick={handleRevert}
