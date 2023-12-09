@@ -145,6 +145,11 @@ export function getSelectables(
       const isCollided = collided(stage.walls, { X, Y }, dx, dy);
       if (!isCollided) {
         // 飛び越える
+        const jumpX = X + dx;
+        const jumpY = Y + dy;
+        if (jumpX < 0 || jumpX >= 9 || jumpY < 0 || jumpY >= 9) {
+          continue; // 盤外
+        }
         selectables.push({ X: X + dx, Y: Y + dy });
       } else {
         // 飛び越えた先に壁がある場合、左右に移動できる
@@ -157,9 +162,14 @@ export function getSelectables(
               [-1, 0],
               [1, 0],
             ];
-        for (const [mX, mY] of dirs2) {
-          if (!collided(stage.walls, { X, Y }, mX, mY)) {
-            selectables.push({ X: X + mX, Y: Y + mY });
+        for (const [jumpx, jumpy] of dirs2) {
+          const jumpX = X + jumpx;
+          const jumpY = Y + jumpy;
+          if (jumpX < 0 || jumpX >= 9 || jumpY < 0 || jumpY >= 9) {
+            continue; // 盤外
+          }
+          if (!collided(stage.walls, { X, Y }, jumpx, jumpy)) {
+            selectables.push({ X: jumpX, Y: jumpY });
           }
         }
       }
