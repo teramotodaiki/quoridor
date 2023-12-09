@@ -24,6 +24,8 @@ function App() {
   };
 
   const remainWallNums = gameManagerRef.current?.remainWallNums ?? [0, 0];
+  const onSelect = gameManagerRef.current?.onSelect;
+  const canRevert = gameManagerRef.current?.operations.length ?? 0 > 0;
 
   return (
     <>
@@ -36,8 +38,19 @@ function App() {
         <span>Black: {remainWallNums[1]}</span>
       </div>
       <div className="fixed-menu">
-        <button className="revert-button" onClick={handleRevert}>
+        <button
+          className="revert-button"
+          onClick={handleRevert}
+          disabled={!canRevert}
+        >
           もどす
+        </button>
+        <button
+          className="select-button"
+          onClick={onSelect}
+          disabled={!onSelect}
+        >
+          決定
         </button>
       </div>
     </>

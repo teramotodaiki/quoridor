@@ -23,6 +23,8 @@ type IOperation =
       after: IPoint;
     };
 
+type OnSelect = (() => void) | undefined;
+
 export class GameManager extends Store {
   players: Piece[] = [];
   walls: Wall[] = [];
@@ -53,6 +55,18 @@ export class GameManager extends Store {
     newStage.walls = stage.walls.slice();
     newStage.operations = stage.operations.slice();
     return newStage;
+  }
+
+  private _onSelect: OnSelect;
+  get onSelect(): OnSelect {
+    return this._onSelect;
+  }
+  set onSelect(func: () => void) {
+    this._onSelect = () => {
+      func();
+      this._onSelect = undefined; // 一度呼んだらリセット
+    };
+    this.emit();
   }
 
   movePiece(X: number, Y: number) {
