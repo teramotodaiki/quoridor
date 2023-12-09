@@ -72,14 +72,15 @@ export class UIWall extends Graphics {
 
   onpointerenter = () => {
     const stage = GameManager.singleton;
-    if (!canPutWall(stage, this)) {
-      return;
-    }
     UIWall.hideAll();
     this.show();
     // 決定ボタンを押したときに壁を置く
     stage.onSelect = () => {
       this.hide();
+      if (!canPutWall(stage, this)) {
+        alert("そこには置けません");
+        return;
+      }
       this.onTap(this);
     };
   };
