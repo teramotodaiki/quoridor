@@ -263,6 +263,15 @@ describe("canReachGoal", () => {
     expect(canReachGoal(0, stage)).toBe(true);
     expect(canReachGoal(1, stage)).toBe(true);
   });
+
+  test("敵が道を塞いでいても考慮しない", () => {
+    const { stage } = mockStage();
+    stage.addWall(1, 8, "horizontal");
+    stage.addWall(3, 8, "horizontal");
+    stage.addWall(6, 8, "horizontal");
+    stage.addWall(8, 8, "horizontal");
+    expect(canReachGoal(0, stage)).toBe(true);
+  });
 });
 
 describe("canPutWall", () => {
