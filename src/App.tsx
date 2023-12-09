@@ -5,17 +5,19 @@ import { init } from "./quoridor/init"; // Dynamic importしてもいい
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const initRef = useRef(false);
   const gameManagerRef = useRef<GameManager | undefined>(undefined);
   const forceUpdate = useReducer((i) => i + 1, 0)[1];
 
   useEffect(() => {
-    if (!canvasRef.current) {
+    if (!canvasRef.current || initRef.current) {
       return;
     }
     const gameManager = init({ canvas: canvasRef.current });
     gameManagerRef.current = gameManager;
     gameManagerRef.current.subscribe(forceUpdate);
     forceUpdate();
+    initRef.current = true;
   }, []);
 
   const handleRevert = () => {
