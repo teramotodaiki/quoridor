@@ -1,7 +1,8 @@
 import { useEffect, useReducer, useRef } from "react";
 import "./App.css";
-import { GameManager } from "./quoridor/game-manager";
 import { init } from "./quoridor/init"; // Dynamic importしてもいい
+
+type GameManager = ReturnType<typeof init>;
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
