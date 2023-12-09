@@ -77,20 +77,17 @@ export class UIWall extends Graphics {
     }
     UIWall.hideAll();
     this.show();
+    // 決定ボタンを押したときに壁を置く
+    stage.onSelect = () => {
+      this.hide();
+      this.onTap(this);
+    };
   };
 
-  onpointertap = () => {
-    // mouseenter or 一度タップしてから、もう一度押すと壁を置く
-    if (this.alpha === 0) {
-      const stage = GameManager.singleton;
-      if (!canPutWall(stage, this)) {
-        return;
-      }
-      UIWall.hideAll();
-      this.show();
-    } else {
-      this.onTap(this);
-    }
+  onmousedown = () => {
+    // マウスの場合はクリックで決定できる
+    const stage = GameManager.singleton;
+    stage.onSelect?.();
   };
 }
 
