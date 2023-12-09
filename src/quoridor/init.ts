@@ -20,9 +20,12 @@ export async function init({ canvas }: InitParams) {
   });
 
   // PIXI.jsは自動的にcanvasに[touch-action="none"]属性を付与する
-  // それだとピンチイン出来なくて不便なので、"auto"に戻す
+  // それだとピンチイン出来なくて不便
+  // しかし、スクロール(パン)は壁を置く操作のときに邪魔になるので無効にしたい
+  // そこで、canvasに[touch-action="pinch-zoom"]属性を付与する
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action
   if (app.view.style) {
-    app.view.style.touchAction = "auto";
+    app.view.style.touchAction = "pinch-zoom";
   }
 
   const stage = GameManager.singleton;
