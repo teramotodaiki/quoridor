@@ -28,9 +28,10 @@ function mockStage() {
 
   return {
     stage,
-    get(player: number) {
-      const target = stage.players[player];
-      const selectables = getSelectables(player, target, stage);
+    get(pIndex: number) {
+      const player = stage.players[pIndex];
+      const enemy = stage.players[1 - pIndex];
+      const selectables = getSelectables(stage, player, enemy);
       return tuple(selectables);
     },
   };

@@ -34,7 +34,7 @@ export class Piece extends Sprite {
     if (pIndex === -1) {
       throw new Error("player not found");
     }
-    const selectables = getSelectables(pIndex, this, stage);
+    const selectables = getSelectables(stage, this);
 
     for (const { X, Y } of selectables) {
       const tile = new SelectableTile(X, Y);

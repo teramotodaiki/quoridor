@@ -128,9 +128,9 @@ export class GameManager extends Store {
 }
 
 export function getSelectables(
-  pIndex: number,
+  stage: GameManager,
   self: IPoint,
-  stage: GameManager
+  enemy?: IPoint
 ) {
   const selectables: { X: number; Y: number }[] = [];
   const dirs = [
@@ -139,7 +139,6 @@ export function getSelectables(
     [-1, 0],
     [1, 0],
   ];
-  const enemy = stage.players[1 - pIndex];
 
   for (const [dx, dy] of dirs) {
     const X = self.X + dx;
@@ -156,7 +155,7 @@ export function getSelectables(
     }
 
     // 相手の駒があれば飛び越える
-    if (enemy.X === X && enemy.Y === Y) {
+    if (enemy && enemy.X === X && enemy.Y === Y) {
       //壁にぶつからないか
       const isCollided = collided(stage.walls, { X, Y }, dx, dy);
       if (!isCollided) {
@@ -249,7 +248,7 @@ export function canReachGoal(pIndex: number, stage: GameManager) {
     }
     visited[X][Y] = true;
 
-    const selectables = getSelectables(pIndex, { X, Y }, stage);
+    const selectables = getSelectables(stage, { X, Y }); // 敵の位置は考慮しないのでenemyは省略
     for (const point of selectables) {
       if (!visited[point.X][point.Y]) {
         queue.push([point.X, point.Y]);
