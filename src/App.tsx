@@ -31,7 +31,6 @@ function App() {
 
   return (
     <>
-      {/* {<h1>Quoridor</h1>} */}
       <div className="player player-white">
         <span>White: {remainWallNums[0]}</span>
       </div>
