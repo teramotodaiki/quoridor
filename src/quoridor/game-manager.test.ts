@@ -168,6 +168,16 @@ describe("getSelectables", () => {
       [5, 4],
       [4, 6],
     ]);
+
+    // ただし、盤外には移動できない
+    stage.players[0] = p(4, 7);
+    stage.players[1] = p(4, 8);
+    expect(get(0)).toStrictEqual([
+      [4, 6],
+      [3, 7],
+      [5, 7],
+      // おそらく[3, 8]にも移動出来ないルールだと思う
+    ]);
   });
 
   // 飛び越えた先に壁があれば左右に移動できる
@@ -185,7 +195,7 @@ describe("getSelectables", () => {
       [5, 5],
     ]);
 
-    // ただし、壁の向こう側には移動できない
+    // ただし、盤外には移動できない
     stage.players[0] = p(0, 4);
     stage.players[1] = p(0, 5);
     stage.addWall(1, 6, "horizontal");
