@@ -30,20 +30,18 @@ describe("createUIWalls", () => {
     const hori = UIWall.get(1, 1, "horizontal")!;
     const vert = UIWall.get(1, 1, "vertical")!;
 
-    hori.onmouseenter();
+    hori.onpointerenter();
     expect(hori.alpha).toBe(1);
 
-    hori.onmouseleave();
+    vert.onpointerenter();
     expect(hori.alpha).toBe(0);
-
-    vert.onmouseenter();
     expect(vert.alpha).toBe(1);
 
-    hori.onmouseenter();
+    hori.onpointerenter();
     expect(vert.alpha).toBe(0);
     expect(hori.alpha).toBe(1);
 
-    hori.onpointertap();
+    hori.onmousedown();
     expect(onTap).toHaveBeenCalledOnce();
     expect(onTap).toHaveBeenCalledWith(hori);
   });
