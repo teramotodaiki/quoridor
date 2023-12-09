@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import { UIWall, createUIWalls } from "./ui-wall";
+import { GameManager } from "./game-manager";
 
 describe("UIWall", () => {
   test("new UIWall", () => {
@@ -24,9 +25,8 @@ describe("createUIWalls", () => {
     expect(uiWallContainer.children.length).toBe(128);
   });
 
-  test("PCから操作する場合", () => {
-    const onTap = vi.fn();
-    createUIWalls({ onTap });
+  test("alphaが移動すること", () => {
+    createUIWalls({ onTap: () => {} });
     const hori = UIWall.get(1, 1, "horizontal")!;
     const vert = UIWall.get(1, 1, "vertical")!;
 
@@ -40,9 +40,29 @@ describe("createUIWalls", () => {
     hori.onpointerenter();
     expect(vert.alpha).toBe(0);
     expect(hori.alpha).toBe(1);
+  });
 
-    hori.onmousedown();
+  test("PCから操作する場合", () => {
+    const onTap = vi.fn();
+    createUIWalls({ onTap });
+    const wall = UIWall.get(1, 1, "horizontal")!;
+
+    wall.onpointerenter();
+    wall.onmousedown();
     expect(onTap).toHaveBeenCalledOnce();
-    expect(onTap).toHaveBeenCalledWith(hori);
+    expect(onTap).toHaveBeenCalledWith(wall);
+  });
+
+  test("スマホから操作する場合", () => {
+    const onTap = vi.fn();
+    createUIWalls({ onTap });
+    const wall = UIWall.get(1, 1, "horizontal")!;
+
+    wall.onpointerenter();
+
+    expect(GameManager.singleton.onSelect).toBeDefined();
+    GameManager.singleton.onSelect!();
+    expect(onTap).toHaveBeenCalledOnce();
+    expect(onTap).toHaveBeenCalledWith(wall);
   });
 });
