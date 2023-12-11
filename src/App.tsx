@@ -29,6 +29,20 @@ function App() {
   const onSelect = gameManagerRef.current?.onSelect;
   const canRevert = gameManagerRef.current?.operations.length ?? 0 > 0;
 
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:8787/");
+    ws.onmessage = (e) => {
+      console.log(e.data, "from server");
+    };
+    ws.onopen = () => {
+      ws.send("ping");
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
   return (
     <>
       <div className="player player-white">
