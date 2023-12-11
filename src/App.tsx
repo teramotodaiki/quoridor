@@ -29,16 +29,22 @@ function App() {
   const onSelect = gameManagerRef.current?.onSelect;
   const canRevert = gameManagerRef.current?.operations.length ?? 0 > 0;
 
+  const webSocketRef = useRef<WebSocket>();
   useEffect(() => {
+    if (webSocketRef.current) {
+      return;
+    }
     const ws = new WebSocket("ws://localhost:8787/");
+    webSocketRef.current = ws;
     ws.onmessage = (e) => {
-      console.log(e.data, "from server");
+      console.log(e.data);
     };
     ws.onopen = () => {
-      ws.send("ping");
+      ws.send("join");
     };
 
     return () => {
+      webSocketRef.current = undefined;
       ws.close();
     };
   }, []);
