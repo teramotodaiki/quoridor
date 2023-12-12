@@ -108,11 +108,8 @@ export class GameManager extends Store {
     UIWall.hideAll();
     this.emit();
 
-    if (this.online) {
-      const playingUserIndex = this.online.user === "white" ? 0 : 1;
-      if (playingUserIndex !== this.currentPlayer) {
-        return;
-      }
+    if (this.isWaitingForOpponent) {
+      return;
     }
 
     const player = this.players[this.currentPlayer];
@@ -198,6 +195,15 @@ export class GameManager extends Store {
   sync() {
     // とりあえず打った手を全部送れば同期できる
     this.webSocket?.send(JSON.stringify(this.operations));
+  }
+
+  /** オンライン対戦で、相手の操作を待っている状態 */
+  get isWaitingForOpponent() {
+    if (!this.online) {
+      return false;
+    }
+    const playingUserIndex = this.online.user === "white" ? 0 : 1;
+    return playingUserIndex !== this.currentPlayer;
   }
 }
 
