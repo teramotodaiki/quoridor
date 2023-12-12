@@ -106,10 +106,17 @@ export class GameManager extends Store {
   updateUI() {
     this.selectableTilesContainer.removeChildren();
     UIWall.hideAll();
+    this.emit();
+
+    if (this.online) {
+      const playingUserIndex = this.online.user === "white" ? 0 : 1;
+      if (playingUserIndex !== this.currentPlayer) {
+        return;
+      }
+    }
 
     const player = this.players[this.currentPlayer];
     player.showSelectableTiles();
-    this.emit();
   }
 
   /** 最後の行動を１つ戻す */
