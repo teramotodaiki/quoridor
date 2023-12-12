@@ -47,7 +47,7 @@ export class Counter {
 
     server.addEventListener("message", (message) => {
       console.log("received from client: ", message.data);
-      this.broadcast(message.data);
+      this.broadcast(message.data, server);
     });
     server.addEventListener("close", () => {
       console.log("closed");
@@ -60,9 +60,11 @@ export class Counter {
     });
   }
 
-  broadcast(message: string) {
+  broadcast(message: string, without?: WebSocket) {
     for (const webSocket of this.sockets) {
-      webSocket.send(message);
+      if (webSocket !== without) {
+        webSocket.send(message);
+      }
     }
   }
 }
