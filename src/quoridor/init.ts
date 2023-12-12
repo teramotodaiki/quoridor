@@ -6,9 +6,12 @@ import { WinEffect } from "./win-effect";
 
 interface InitParams {
   canvas: HTMLCanvasElement;
+  online?: {
+    user: "black" | "white";
+  };
 }
 
-export function init({ canvas }: InitParams) {
+export function init({ canvas, online }: InitParams) {
   // The application will create a renderer using WebGL, if possible,
   // with a fallback to a canvas render. It will also setup the ticker
   // and the root stage PIXI.Container
@@ -31,6 +34,12 @@ export function init({ canvas }: InitParams) {
   const stage = GameManager.singleton;
 
   const board = new Container();
+  stage.board = board;
+
+  if (online) {
+    stage.online = online;
+    stage.connect();
+  }
 
   // 選択可能な壁を表示する
   const uiWallContainer = createUIWalls({

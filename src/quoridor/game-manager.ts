@@ -16,7 +16,7 @@ interface IWall extends IPoint {
 type IOperation =
   | {
       type: "wall";
-      wall: Wall;
+      wall: IWall;
     }
   | {
       type: "piece";
@@ -26,10 +26,15 @@ type IOperation =
 
 type OnSelect = (() => void) | undefined;
 
+interface IOnline {
+  user: "black" | "white";
+}
+
 export class GameManager extends Store {
   players: Piece[] = [];
   walls: Wall[] = [];
   operations: IOperation[] = [];
+  board?: Container;
 
   get currentPlayer() {
     return this.operations.length % this.players.length;
@@ -81,16 +86,19 @@ export class GameManager extends Store {
     player.X = X;
     player.Y = Y;
     this.updateUI();
+    this.sync();
   }
 
   addWall(X: number, Y: number, direction: "horizontal" | "vertical") {
     const wall = new Wall(X, Y, direction);
     this.operations.push({
       type: "wall",
-      wall,
+      wall: { X, Y, direction },
     });
     this.walls.push(wall);
     this.updateUI();
+
+    this.sync();
     return wall;
   }
 
@@ -118,12 +126,70 @@ export class GameManager extends Store {
       player.X = before.X;
       player.Y = before.Y;
     } else {
-      const { wall } = last;
-      wall.destroy();
+      const wall = this.walls.find(
+        (w) =>
+          last.wall.X === w.X &&
+          last.wall.Y === w.Y &&
+          last.wall.direction === w.direction
+      );
+      wall?.destroy();
       this.walls = this.walls.filter((w) => w !== wall);
     }
 
     this.updateUI();
+  }
+
+  online?: IOnline;
+  private webSocket?: WebSocket;
+  connect() {
+    const webSocket = new WebSocket("ws://localhost:8787/");
+    webSocket.onopen = () => {
+      this.webSocket = webSocket;
+    };
+    webSocket.onmessage = (e) => {
+      console.log(e.data);
+      let operations: IOperation[];
+      try {
+        operations = JSON.parse(e.data);
+      } catch (error) {
+        throw new Error("JSON Parse Error: " + e.data);
+      }
+      const last = operations[operations.length - 1]; // last
+      if (!last) {
+        return;
+      }
+      switch (last.type) {
+        case "piece": {
+          const { X, Y } = last.after;
+          const pIndex = (operations.length - 1) % this.players.length;
+          const player = this.players[pIndex];
+          player.X = X;
+          player.Y = Y;
+          break;
+        }
+        case "wall": {
+          const { X, Y, direction } = last.wall;
+          const wall = new Wall(X, Y, direction);
+          this.walls.push(wall);
+          this.board?.addChild(wall);
+          break;
+        }
+      }
+      this.operations = operations;
+      this.updateUI();
+    };
+    webSocket.onclose = () => {
+      console.log("closed");
+      this.webSocket = undefined;
+      window.setTimeout(() => {
+        this.connect(); // 再接続
+      }, 5000);
+    };
+  }
+
+  sync() {
+    // とりあえず打った手を全部送れば同期できる
+    this.webSocket?.send(JSON.stringify(this.operations));
   }
 }
 

@@ -14,7 +14,11 @@ function App() {
     if (!canvasRef.current || initRef.current) {
       return;
     }
-    const gameManager = init({ canvas: canvasRef.current });
+    const user = new URLSearchParams(window.location.search).get("user");
+    const gameManager = init({
+      canvas: canvasRef.current,
+      online: user === "white" || user === "black" ? { user } : undefined,
+    });
     gameManagerRef.current = gameManager;
     gameManagerRef.current.subscribe(forceUpdate);
     forceUpdate();
