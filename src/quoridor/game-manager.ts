@@ -159,7 +159,8 @@ export class GameManager extends Store {
       try {
         operations = JSON.parse(e.data);
       } catch (error) {
-        throw new Error("JSON Parse Error: " + e.data);
+        console.info(e.data);
+        return;
       }
       const last = operations[operations.length - 1]; // last
       if (!last) {
