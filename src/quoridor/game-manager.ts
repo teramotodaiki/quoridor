@@ -146,7 +146,7 @@ export class GameManager extends Store {
   online?: IOnline;
   private webSocket?: WebSocket;
   connect() {
-    const webSocket = new WebSocket("ws://localhost:8787/");
+    const webSocket = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL);
     webSocket.onopen = () => {
       this.webSocket = webSocket;
     };

@@ -23,7 +23,7 @@ export class Room {
   state: DurableObjectState;
   sockets: WebSocket[] = [];
 
-  constructor(state: DurableObjectState, env: Env) {
+  constructor(state: DurableObjectState) {
     this.state = state;
   }
 
