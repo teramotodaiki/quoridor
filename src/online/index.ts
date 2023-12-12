@@ -1,7 +1,7 @@
 /// <reference types="@cloudflare/workers-types" />
 
 export interface Env {
-  COUNTER: DurableObjectNamespace;
+  ROOM: DurableObjectNamespace;
 }
 
 // Worker
@@ -9,8 +9,8 @@ export interface Env {
 export default {
   async fetch(request: Request, env: Env) {
     // 本来は部屋ごとにユニークな名前をつける
-    const id = env.COUNTER.idFromName("test");
-    const obj = env.COUNTER.get(id);
+    const id = env.ROOM.idFromName("test");
+    const obj = env.ROOM.get(id);
 
     //Durable Objectのfetchメソッドを呼び出す
     return await obj.fetch(request);
@@ -19,7 +19,7 @@ export default {
 
 // Durable Object
 
-export class Counter {
+export class Room {
   state: DurableObjectState;
   sockets: WebSocket[] = [];
 
