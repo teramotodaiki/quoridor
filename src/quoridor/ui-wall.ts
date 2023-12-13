@@ -72,6 +72,9 @@ export class UIWall extends Graphics {
 
   onpointerenter = () => {
     const stage = GameManager.singleton;
+    if (stage.isWaitingForOpponent) {
+      return;
+    }
     UIWall.hideAll();
     this.show();
     // 決定ボタンを押したときに壁を置く
@@ -88,6 +91,9 @@ export class UIWall extends Graphics {
   onmousedown = () => {
     // マウスの場合はクリックで決定できる
     const stage = GameManager.singleton;
+    if (stage.isWaitingForOpponent) {
+      return;
+    }
     stage.onSelect?.();
   };
 }

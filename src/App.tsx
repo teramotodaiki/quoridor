@@ -1,10 +1,15 @@
 import { useEffect, useReducer, useRef } from "react";
 import "./App.css";
+import { Mode } from "./Root";
 import { init } from "./quoridor/init"; // Dynamic importしてもいい
 
 type GameManager = ReturnType<typeof init>;
 
-function App() {
+interface AppProps {
+  mode: Mode;
+}
+
+function App(props: AppProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const initRef = useRef(false);
   const gameManagerRef = useRef<GameManager | undefined>(undefined);
@@ -14,7 +19,10 @@ function App() {
     if (!canvasRef.current || initRef.current) {
       return;
     }
-    const gameManager = init({ canvas: canvasRef.current });
+    const gameManager = init({
+      canvas: canvasRef.current,
+      online: props.mode.online,
+    });
     gameManagerRef.current = gameManager;
     gameManagerRef.current.subscribe(forceUpdate);
     forceUpdate();

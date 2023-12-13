@@ -366,3 +366,32 @@ describe("currentPlayer", () => {
     expect(stage.currentPlayer).toBe(0);
   });
 });
+
+describe("isWaitingForOpponent", () => {
+  test("initialized", () => {
+    const { stage } = mockStage();
+    expect(stage.isWaitingForOpponent).toBe(false);
+  });
+  test("move pieces (player is white)", () => {
+    const { stage } = mockStage();
+    stage.online = {
+      user: "white",
+    };
+    expect(stage.isWaitingForOpponent).toBe(false);
+    stage.movePiece(4, 1);
+    expect(stage.isWaitingForOpponent).toBe(true);
+    stage.movePiece(4, 7);
+    expect(stage.isWaitingForOpponent).toBe(false);
+  });
+  test("move pieces (player is black)", () => {
+    const { stage } = mockStage();
+    stage.online = {
+      user: "black",
+    };
+    expect(stage.isWaitingForOpponent).toBe(true);
+    stage.movePiece(4, 1);
+    expect(stage.isWaitingForOpponent).toBe(false);
+    stage.movePiece(4, 7);
+    expect(stage.isWaitingForOpponent).toBe(true);
+  });
+});

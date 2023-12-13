@@ -4,9 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc && vite build",
-    "deploy": "npm run build && npx wrangler pages deploy dist",
-    "dev": "vite",
+    "build": "run-p build:*",
+    "build:tsc": "tsc --noEmit",
+    "build:vite": "vite build",
+    "deploy": "npm run build && run-s deploy:*",
+    "deploy:pages": "wrangler pages deploy dist",
+    "deploy:workers": "wrangler deploy",
+    "dev": "run-p dev:*",
+    "dev:vite": "vite",
+    "dev:workers": "wrangler dev",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest"
@@ -17,6 +23,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231121.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -26,6 +33,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "jsdom": "^22.1.0",
+    "npm-run-all2": "^6.1.1",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
     "vitest": "^0.34.6",
