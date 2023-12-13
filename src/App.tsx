@@ -11,12 +11,11 @@ interface AppProps {
 
 function App(props: AppProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const initRef = useRef(false);
   const gameManagerRef = useRef<GameManager | undefined>(undefined);
   const forceUpdate = useReducer((i) => i + 1, 0)[1];
 
   useEffect(() => {
-    if (!canvasRef.current || initRef.current) {
+    if (!canvasRef.current || gameManagerRef.current) {
       return;
     }
     const gameManager = init({
@@ -26,7 +25,6 @@ function App(props: AppProps) {
     gameManagerRef.current = gameManager;
     gameManagerRef.current.subscribe(forceUpdate);
     forceUpdate();
-    initRef.current = true;
   }, []);
 
   const handleRevert = () => {
